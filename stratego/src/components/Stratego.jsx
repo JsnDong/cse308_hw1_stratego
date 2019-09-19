@@ -1,7 +1,5 @@
 import React from 'react';
-
-import {isEqual, matrix, matrix_includes} from "./LilacArray.js"
-
+import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
 import {Board} from "./Board.jsx"
 //import Scoreboard from "./Scoreboard.jsx"
 
@@ -197,4 +195,5 @@ function getPieces(color) {
     return pieces;
 }
 
-export {Stratego, Color, Rank};
+export {Color, Rank};
+export default Stratego;
