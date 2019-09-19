@@ -1,5 +1,5 @@
 import React from 'react';
-import './Stratego.css';
+import '../stylesheets/Stratego.css';
 
 import {Piece} from "./Piece.jsx"
 

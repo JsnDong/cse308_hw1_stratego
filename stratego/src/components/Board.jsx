@@ -1,7 +1,7 @@
 import React from 'react';
-import './Stratego.css';
+import '../stylesheets/Stratego.css';
 
-import {matrix_includes} from "./LilacArray.js"
+import {matrix_includes} from "../LilacArray.js"
 
 import {Tile} from "./Tile.jsx"
 
