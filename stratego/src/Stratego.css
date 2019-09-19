@@ -1,0 +1,48 @@
+.stratego {
+  /* TO DO */
+}
+
+.board {
+  /* TO DO */
+}
+
+.board_row {
+  /* TO DO */
+} 
+
+.tile {
+  display: inline-block;
+  vertical-align: top;
+  border: 1px solid #999;
+  height: 50px;
+  width: 50px;
+}
+
+.passable {
+  border: 1px solid grey;
+}
+
+.impassable {
+  background-color: grey;
+  border: 1px solid grey;
+}
+
+.piece {
+  margin: auto;
+  text-align: center;
+  vertical-align: center;
+  height: 49px;
+  width: 49px;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.red {
+  background-color: red;
+}
+
+.hidden {
+  display: none;
+}
