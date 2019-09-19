@@ -44,7 +44,7 @@ class login extends Component {
 
 	render() {
 		if (this.state.redirect) {
-			return <Redirect exact to="/main" />;
+			return <Redirect exact to="/play"/>;
 		} else {
 			const errorMessage = this.state.errors;
 			return (
