@@ -30,8 +30,8 @@ public class UserController {
     //@RequestMapping(value = "/post", method = RequestMethod.POST)
     @GetMapping (path = "/post")
     public User create() {
-        String username = "TESTuser2";
-        String password = "TESTpass2";
+        String username = "TESTuser3";
+        String password = "TESTpass3";
         return userRepository.save(new User(username, password));
     }
 
