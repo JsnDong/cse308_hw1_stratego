@@ -35,6 +35,7 @@ class login extends Component {
 			.then((json) => {
 				if (json.hasOwnProperty('token')) {
 					localStorage.setItem('token', json.token);
+					localStorage.setItem('token-time', new Date());
 					this.setState({ redirect: true });
 				} else {
 					this.setState({ errors: 'Invalid Username/Password Combination!' });
@@ -43,7 +44,7 @@ class login extends Component {
 	};
 
 	render() {
-		if (this.state.redirect) {
+		if (this.state.redirect || this.isAuthenticated()) {
 			return <Redirect exact to="/play"/>;
 		} else {
 			const errorMessage = this.state.errors;
@@ -81,6 +82,10 @@ class login extends Component {
 				</div>
 			);
 		}
+	}
+
+	isAuthenticated() {
+		return false;
 	}
 }
 
