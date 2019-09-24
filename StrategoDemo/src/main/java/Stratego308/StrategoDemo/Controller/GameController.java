@@ -4,6 +4,7 @@ import Stratego308.StrategoDemo.Entity.Game;
 import Stratego308.StrategoDemo.Repository.GameRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class GameController {
         return gameRespository.findAll();
     }
 
-    @GetMapping(path = "/createGame")
+    @PostMapping(path = "/createGame")
     public Game createGame() {
         int winLose = 1;
         String time = "1:00";

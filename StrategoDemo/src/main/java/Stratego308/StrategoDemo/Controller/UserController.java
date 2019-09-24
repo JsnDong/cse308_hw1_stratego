@@ -4,26 +4,27 @@ import Stratego308.StrategoDemo.Entity.User;
 import Stratego308.StrategoDemo.Repository.UsersRepository;
 import Stratego308.StrategoDemo.Testing.UserTesting;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 public class UserController {
 
     @Autowired
     UsersRepository userRepository;
 
-    @RequestMapping(path = "/")
-    public String check() {
-        return ":)";
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String index() {
+        return "index";
     }
 
     //UserTesting userTesting = UserTesting.getInstance();
 
     @GetMapping (path = "/users")
-    public List<User> index() {
+    public List<User> allUsers() {
         return userRepository.findAll();
     }
 
