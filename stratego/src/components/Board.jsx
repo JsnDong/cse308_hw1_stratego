@@ -1,37 +1,37 @@
 import React from 'react';
 import '../stylesheets/Stratego.css';
 
-import {matrix_includes} from "../LilacArray.js"
-
 import {Tile} from "./Tile.jsx"
 
 class Board extends React.Component {
   render() {
-    const {mode,board} = this.props;
+    const {mode, board, highlighted, selectTile} = this.props;
+
+    let board_class = "board"
 
     let tiles = []
+    let tiles_row
+
     for (let row = 0; row < board.length; row++) {
-      let tiles_row = [];
+      tiles_row = [];
       for (let col = 0; col < board.length; col++) {
-        let impassable = matrix_includes(IMPASSABLES, [row, col]);
-        tiles_row.push(<Tile mode={mode} board={board} row={row} col={col} impassable={impassable} key={[row,col]}/>);
+        tiles_row.push(<Tile mode={mode}
+                             board={board}
+                             highlighted = {highlighted}
+                             selectTile={selectTile}
+                             row={row}
+                             col={col} 
+                             key={[row,col]} />);
       }
       tiles.push(<div className="board_row" key={row}>{tiles_row}</div>);
     }
 
     return (
-        <div className="board">
+        <div className={board_class}>
             {tiles}
         </div>
     );
   }
 }
-
-/*-----------CONSTANTS-----------*/
-
-const IMPASSABLES = [[4,2],[5,2],
-                     [4,3],[5,3],
-                     [4,6],[5,6],
-                     [4,7],[5,7]];
 
 export {Board};

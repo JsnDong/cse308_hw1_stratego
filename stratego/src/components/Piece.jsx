@@ -1,24 +1,25 @@
 import React from 'react';
 import "../stylesheets/Stratego.css"
 
-import {Color,Rank} from "./Stratego.jsx"
+import {Mode, Color, Rank, COLOR, RANK} from "./Stratego.jsx"
 
 class Piece extends React.Component {
     render() {
-        const {color, rank} = this.props;
-        let owner = (color === Color.RED) ? "red" : "blue";
+        const {board, row, col} = this.props
 
-        let text = Rank.properties[rank].symbol
-        let text_div = "";
-        if (owner === "blue") {
-            text_div = <div className="hidden">{text}</div>
-        } else {
-            text_div = <div>{text}</div>
+        let color = board[row][col][COLOR]
+        let rank = board[row][col][RANK]
+        let symbol = Rank.properties[rank].symbol
+
+        let piece_class = "piece"
+
+        if (color === Color.BLUE) {
+            piece_class += " hidden"
         }
 
         return (
-            <div className={"piece " + owner}>
-                {text_div}
+            <div className={piece_class}>
+                {symbol}
             </div>
         );
     }
