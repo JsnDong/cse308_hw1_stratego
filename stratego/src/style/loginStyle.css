@@ -1,0 +1,82 @@
+
+@media all and (min-width: 480px) {
+  .Login {
+    padding: 60px 0;
+  }
+
+  .Login form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+}
+
+.box-container {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  display: flex;
+  justify-self: center;
+  flex-direction: column;
+  max-width: 35em;
+  min-width: 21em;
+  box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.InputContainer {
+    width: 100%;
+    height: 56px;
+    border-radius: 4px;
+    position: relative;
+    background-color: rgba(255,255,255,0.3);
+    transition: 0.3s all;
+  }
+
+.TextInput {
+  width: 70%;
+  height: 40px;
+  border-radius: 5px;
+  border-width: 0.5;
+  border-color: lightgrey;
+  font-size: 18px;
+}
+
+.login-btn {
+  padding: 4px 30px;
+  /* background-color: #417cef; */
+  border: 0;
+  font-size: 18px;
+  border-radius: 3px;
+  font-family: Oxygen, sans-serif;
+  background-color: rgba(17, 19, 56, 0.959);
+  color: white;
+  margin-top: 20px;
+  transition: background-color 0.3s ease-out;
+  cursor: pointer;
+}
+
+.signup-btn {
+  padding: 4px 30px 30px;
+  /* background-color: #417cef; */
+  border: 0;
+  font-size: 18px;
+  border-radius: 3px;
+  font-family: Oxygen, sans-serif;
+  background-color: transparent;
+  margin-top: 20px;
+  transition: background-color 0.3s ease-out;
+  cursor: pointer;
+  font-size: 19;
+  font-family: Oxygen, sans-serif;
+  font-weight: lighter;
+  text-decoration:underline;
+  color: grey;
+}
+
+.Title {
+  font-size: 19;
+  font-family: Oxygen, sans-serif;
+  font-weight: 'bold';
+  color: rgba(17, 19, 56, 0.959);
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
-
+import { Button, FormGroup, FormControl, FormLabel, ControlLabel } from "react-bootstrap";
+import '../style/loginStyle.css';
 
 class login extends Component {
 	constructor(props) {
@@ -48,37 +49,42 @@ class login extends Component {
 		} else {
 			const errorMessage = this.state.errors;
 			return (
-				<div className="login_div">
-					<h1>Log In</h1>
-					<div className="container">
+					<div className="Login">
+					<div className="box-container"> 
+					<h1 className="Title">Log In</h1>
 						<form className="login_form" onSubmit={this.handleSubmit}>
-							Username{' '}
-							<input
-								name="username"
+							<FormGroup controlId="email" bsSize="large">
+								<FormControl
+								autoFocus
 								type="text"
+								placeholder="Username"
 								onChange={(e) => this.handleCredentialChange(e, 'username')}
 								required
-							/>
-							<br />
-							Password{' '}
-							<input
-								className="password_login"
-								name="password"
-								type="password"
+								/>
+							</FormGroup>
+							<FormGroup controlId="password" bsSize="large">
+								<FormControl
 								onChange={(e) => this.handleCredentialChange(e, 'password')}
+								type="password"
+								placeholder="Password"
 								required
-							/>
-							<br />
+								/>
+							</FormGroup>
 							<p> {errorMessage}</p>
-							<button type="submit" className="btn btn-secondary">
-								Log In
-							</button>
+							<Button
+								block
+								bsSize="large"
+								type="submit"
+							>
+								Login
+							</Button>
+							<Link to="/sign_up">
+								<button className="signup-btn" >Sign Up</button>
+							</Link>
 						</form>
-						<Link to="/sign_up">
-							<button className="btn btn-secondary">Sign Up</button>
-						</Link>
+						</div>
 					</div>
-				</div>
+					
 			);
 		}
 	}
