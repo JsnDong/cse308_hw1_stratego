@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { Button, FormGroup, FormControl, FormLabel, ControlLabel } from "react-bootstrap";
+import '../style/loginStyle.css';
 
 class signup extends Component {
 	constructor(props) {
@@ -22,38 +24,44 @@ class signup extends Component {
 		} else {
 			const errorMessage = this.state.errors;
 			return (
-				<div className="container">
-					<h1>Sign Up</h1>
-					<div>
+				<div className="Signup">
+					<div className="box-container"> 
+					<h1 className="Title">Sign Up</h1>
 						<form className="signup_form" onSubmit={this.handleSubmit}>
-							Username
-							<input
-								name="username"
+							<FormGroup controlId="formBasicText" bsSize="large">
+								<FormControl
+								autoFocus
 								type="text"
+								placeholder="Username"
 								onChange={(e) => this.handleFieldChange(e, 'username')}
 								required
-							/>
-							<br />
-							Password
-							<input
-								name="password"
-								type="password"
+								/>
+							</FormGroup>
+							<FormGroup controlId="password" bsSize="large">
+								<FormControl
 								onChange={(e) => this.handleFieldChange(e, 'password')}
-								required
-							/>
-							<br />
-							Confirm Password
-							<input
-								name="confirm_password"
 								type="password"
-								onChange={(e) => this.handleFieldChange(e, 'confirm_password')}
+								placeholder="Password"
 								required
-							/>
-							<br />
+								/>
+							</FormGroup>
+							<FormGroup controlId="password" bsSize="large">
+								<FormControl
+								name="confirm_password"
+								onChange={(e) => this.handleFieldChange(e, 'confirm_password')}
+								type="password"
+								placeholder="Confirm Password"
+								required
+								/>
+							</FormGroup>
 							<p style={{ color: 'white' }}> {errorMessage}</p>
-							<button type="submit" className="btn btn-secondary">
+							<Button
+								block
+								bsSize="large"
+								type="submit"
+							>
 								Submit
-							</button>
+							</Button>
 						</form>
 					</div>
 				</div>
