@@ -10,15 +10,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 public class UserController {
 
     @Autowired
     UsersRepository userRepository;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/pong", method = RequestMethod.GET)
+    @CrossOrigin(origins = "*") //TODO change me!
     public String index() {
-        return "index";
+        return "asdfasf";
     }
 
     //UserTesting userTesting = UserTesting.getInstance();
