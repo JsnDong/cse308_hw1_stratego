@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Button, FormGroup, FormControl, FormLabel, ControlLabel } from "react-bootstrap";
+import axios from 'axios';
 import '../style/loginStyle.css';
 
 class signup extends Component {
@@ -10,8 +11,10 @@ class signup extends Component {
 			redirect: false,
 			username: '',
 			password: '',
-			errors: ''
+			errors: '',
+			authenticated: false,
 		};
+		this.authenticate();
 	}
 
 	handleFieldChange = (e, field) => {
@@ -19,31 +22,30 @@ class signup extends Component {
 	};
 
 	handleSignUp = (e) => {
-		const data = {
+		const user = {
 			username: this.state.username,
 			password: this.state.password
 		};
 		e.preventDefault();
 
-		fetch('http://localhost:8000/signup/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
+		axios.post('http://localhost:8080/userPost', user).then(
+			(response) => {
+				console.log(response);
+				this.setState({ redirect: true });
 			},
-			body: JSON.stringify(data)
-		})
-			.then((res) => res.json())
-			.then((json) => {
-				if (json.hasOwnProperty('token')) {
-					this.setState({ redirect: true });
-				} else {
-					this.setState({ errors: 'Error signing up! Try a different username' });
-				}
-			});
+			(error) => {
+				this.setState({ 
+					errors: 'Error signing up! Try a different username',
+					username: '',
+					password: '',
+				});
+			}
+		);
 	}
 
 	render() {
-		if (this.isAuthenticated()) {
+
+		if (this.state.authenticated) {
 			return <Redirect exact to="/play"/>;
 		}
 		if (this.state.redirect) {
@@ -54,7 +56,7 @@ class signup extends Component {
 				<div className="Signup">
 					<div className="box-container"> 
 					<h1 className="Title">Sign Up</h1>
-						<form className="signup_form" onSubmit={this.handleSubmit}>
+						<form className="signup_form" onSubmit={this.handleSignUp}>
 							<FormGroup controlId="formBasicText" bsSize="large">
 								<FormControl
 								autoFocus
@@ -81,7 +83,7 @@ class signup extends Component {
 								required
 								/>
 							</FormGroup>
-							<p style={{ color: 'white' }}> {errorMessage}</p>
+							<p style={{ color: 'red' }}> {errorMessage}</p>
 							<Button
 								block
 								bsSize="large"
@@ -95,8 +97,18 @@ class signup extends Component {
 			);
 		}
 	}
-	isAuthenticated() {
-		return false;
+	authenticate() {
+		if (!localStorage.hasOwnProperty('token')) {
+			return false;
+		}
+		console.log(localStorage.getItem('token'));
+		axios.post('http://localhost:8080/token-auth', localStorage.getItem('token')).then(
+			(res) => {
+				if (res.data) {
+					this.setState({authenticated: true});
+				}
+			},
+		);
 	}
 }
 

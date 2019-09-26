@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { Button, FormGroup, FormControl, FormLabel, ControlLabel } from "react-bootstrap";
+import axios from 'axios';
 import '../style/loginStyle.css';
 
 class login extends Component {
@@ -19,33 +20,31 @@ class login extends Component {
 	};
 
 	handleSubmit = (e) => {
-		const data = {
+		const user = {
 			username: this.state.username,
 			password: this.state.password
 		};
 		e.preventDefault();
 
-		fetch('http://localhost:8000/token-auth/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
+		axios.post('http://localhost:8080/users', user).then(
+			(res) => {
+				console.log(res);
+				localStorage.setItem('token', res.data);
+				//this.setState({ redirect: true});
 			},
-			body: JSON.stringify(data)
-		})
-			.then((res) => res.json())
-			.then((json) => {
-				if (json.hasOwnProperty('token')) {
-					localStorage.setItem('token', json.token);
-					localStorage.setItem('token-time', new Date());
-					this.setState({ redirect: true });
-				} else {
-					this.setState({ errors: 'Invalid Username/Password Combination!' });
-				}
-			});
+			(err) => {
+
+				this.setState({
+					errors: 'Invalid Username/Password Combination!',
+				});
+			}
+		);
 	};
 
 	render() {
-		if (this.state.redirect || this.isAuthenticated()) {
+		this.redirectIfAuthenticated();
+
+		if (this.state.redirect) {
 			return <Redirect exact to="/play"/>;
 		} else {
 			const errorMessage = this.state.errors;
@@ -71,7 +70,7 @@ class login extends Component {
 								required
 								/>
 							</FormGroup>
-							<p> {errorMessage}</p>
+							<p style={{ color: 'red' }}> {errorMessage}</p>
 							<Button
 								block
 								bsSize="large"
@@ -90,8 +89,17 @@ class login extends Component {
 		}
 	}
 
-	isAuthenticated() {
-		return false;
+	redirectIfAuthenticated() {
+		if (!localStorage.hasOwnProperty('token')) {
+			return false;
+		}
+		axios.post('http://localhost:8080/token-auth', localStorage.getItem('token')).then(
+			(res) => {
+				if (res.data) {
+					this.setState({redirect: true});
+				}
+			},
+		);
 	}
 }
 
