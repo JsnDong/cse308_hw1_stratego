@@ -79,25 +79,18 @@ class login extends Component {
 							>
 								Login
 							</Button>
-							<Link to="/sign_up">
+							<Link to="/signup">
 								<button className="signup-btn" >Sign Up</button>
 							</Link>
 						</form>
-<<<<<<< HEAD
 						</div>
-=======
-						<Link to="/signup">
-							<button className="btn btn-secondary">Sign Up</button>
-						</Link>
->>>>>>> 8c1290902763d68a7a49d54d5bc8ac83120e1b8d
 					</div>
-					
 			);
 		}
 	}
 
 	isAuthenticated() {
-		return false;
+		return false
 	}
 }
 

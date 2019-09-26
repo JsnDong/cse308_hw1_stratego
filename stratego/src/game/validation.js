@@ -12,13 +12,14 @@ import {Rank}  from '../components/Stratego.jsx'
  */
 export const handleMove = (board, actionx, actiony, targetx, targety) => {
     if(board[targetx][targety] === null){
-        console.log('in here');
         board[targetx][targety] = board[actionx][actiony];
         board[actionx][actiony] = null;
         return board;
     }
-    const power = Rank.properties[board[actionx][actiony][1]];
-    const tpower = Rank.properties[board[targetx][targety][1]];
+    const power = Rank.properties[board[actionx][actiony][1]].power;
+    const tpower = Rank.properties[board[targetx][targety][1]].power;
+    console.log(power)
+    console.log(tpower)
     if(((power === 3) && (tpower === 11)) || ((power === 1) && (tpower === 10)) || (tpower < power)){
         board[targetx][targety]= board[actionx][actiony]; //miner has disarmed a bomb and swapped places
         board[actionx][actiony] = null;
@@ -26,6 +27,7 @@ export const handleMove = (board, actionx, actiony, targetx, targety) => {
         board[actionx][actiony] = null;
         board[targetx][targety] = null;
     } else {
+        board[targetx][targety][2] = true;
         board[actionx][actiony] =  null; //selfdestruct
     }
     return board;

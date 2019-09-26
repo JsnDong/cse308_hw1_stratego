@@ -45,7 +45,11 @@
   display: none;
 }
 
-.selected {
+.blue_selected {
+  background-color: blue;
+}
+
+.red_selected {
   background-color: red;
 }
 
