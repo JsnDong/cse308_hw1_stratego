@@ -1,5 +1,34 @@
 import {Rank}  from '../components/Stratego.jsx'
 
+const size = 10;
+/**
+ * Check if enemy's flag is gone or if enemy has no moving pieces left
+ * @param {*} board 
+ * @param {*} endx 
+ * @param {*} endy 
+ */
+export const isWon = (board, enemyColor) => {
+    
+    console.log(enemyColor);
+    let hasFlag = false
+    let enemyHasMove = false;
+    for(let i = 0; i < size; i++){
+        for(let j = 0; j < size; j++){
+            if(board[i][j] && (board[i][j][0] === enemyColor) && (Rank.properties[board[i][j][1]] !== 0 ) && (Rank.properties[board[i][j][1]] !== 11 )){
+                enemyHasMove = true;
+            } else if(board[i][j] && (board[i][j][0] === enemyColor) && (Rank.properties[board[i][j][1]] === 0)){
+                hasFlag = true;
+            }
+        }
+    }
+    if(!enemyHasMove){
+        return true;
+    }
+    if(hasFlag === false){
+        return true;
+    }
+    return false;
+};
 
 /**
  * Returns updated board. Checks which piece should win and kills other
