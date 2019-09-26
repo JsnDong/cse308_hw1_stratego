@@ -1,6 +1,7 @@
 import React from 'react';
 import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
 import {Board} from "./Board.jsx"
+import {handleMove} from "../game/validation.js"
 //import Scoreboard from "./Scoreboard.jsx"
 
 class Stratego extends React.Component {
@@ -94,7 +95,6 @@ class Stratego extends React.Component {
             if (!this.state.selected && !this.state.highlighted) {
                 if (new_board[row][col]) {
                     console.log("piece selected")
-    
                     this.setState({
                         selected: [row, col],
                     })
@@ -131,10 +131,11 @@ class Stratego extends React.Component {
                     let piece_row = this.state.selected[ROW]
                     let piece_col = this.state.selected[COL]
                     let piece = new_board[piece_row][piece_col]
-    
-                    new_board[piece_row][piece_col] = null
-                    new_board[row][col] = piece
-    
+                    
+                    new_board = handleMove(this.state.board, piece_row, piece_col, row, col)
+                    
+                    //new_board[piece_row][piece_col] = null
+                    //new_board[row][col] = piece
                     this.setState({
                         board: new_board,
                         selected: null,
