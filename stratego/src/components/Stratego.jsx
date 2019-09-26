@@ -1,6 +1,9 @@
 import React from 'react';
 import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
 import {Board} from "./Board.jsx"
+import {Move} from "../Move.js";
+import MoveHistory from "./MoveHistory.jsx";
+
 //import Scoreboard from "./Scoreboard.jsx"
 
 class Stratego extends React.Component {
@@ -10,7 +13,8 @@ class Stratego extends React.Component {
             mode: Mode.SETUP,
             board: this.setup(),
             selected: null,
-            highlighted: null
+            highlighted: null,
+            moves: [],
         }
         this.selectTile = this.selectTile.bind(this)
 
@@ -50,7 +54,7 @@ class Stratego extends React.Component {
                     else
                         tiles[row][col].push(red_pieces.splice(Math.floor(Math.random() * red_pieces.length), 1).pop())
                 } else {
-                    tiles[row][col] = null
+                    tiles[row][col] = null                    
                 }
             }
         }
@@ -157,14 +161,18 @@ class Stratego extends React.Component {
                     let piece_row = this.state.selected[ROW]
                     let piece_col = this.state.selected[COL]
                     let piece = new_board[piece_row][piece_col]
+                    const target_piece = new_board[row][col];
     
                     new_board[piece_row][piece_col] = null
                     new_board[row][col] = piece
+                    const new_move = new Move(piece,[piece_row,piece_col],target_piece,[row,col]);
+                    const moves = [new_move, ...this.state.moves];
     
                     this.setState({
                         board: new_board,
                         selected: null,
-                        highlighted: null
+                        highlighted: null,
+                        moves: moves,
                     })
                 } else
                     console.log("tile is not reachable")
@@ -193,6 +201,7 @@ class Stratego extends React.Component {
                         highlighted = {this.state.highlighted}
                         selectTile={this.selectTile}
                         />}
+                {<MoveHistory moves={this.state.moves}/>}
             </div>
         );
     }
