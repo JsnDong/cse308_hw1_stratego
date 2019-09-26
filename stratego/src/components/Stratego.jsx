@@ -1,8 +1,10 @@
 import React from 'react';
-import {isEqual, matrix, matrix_includes} from "../LilacArray.js";
-import {Board} from "./Board.jsx";
+import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
+import {Board} from "./Board.jsx"
+import {handleMove} from "../game/validation.js"
 import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
+
 //import Scoreboard from "./Scoreboard.jsx"
 
 class Stratego extends React.Component {
@@ -36,10 +38,8 @@ class Stratego extends React.Component {
 
         for (let row = 0; row < DIMENSION; row++) {
             for (let col = 0; col < DIMENSION; col++) {
-                tiles[row][col] = []
-
                 if (BLUE_ROWS.includes(row)) {
-                    tiles[row][col].push(Color.BLUE)
+                    tiles[row][col] = [Color.BLUE]
                     if (row === BLUE_FLAG_ROW && col === blue_flag_col)
                         tiles[row][col].push(Rank.FLAG)
                     else if (matrix_includes(blue_bomb_positions, [row, col]))
@@ -47,7 +47,7 @@ class Stratego extends React.Component {
                     else
                         tiles[row][col].push(blue_pieces.splice(Math.floor(Math.random() * blue_pieces.length), 1).pop())
                 } else if (RED_ROWS.includes(row)) {
-                    tiles[row][col].push(Color.RED)
+                    tiles[row][col] = [Color.RED]
                     if (row === RED_FLAG_ROW && col === red_flag_col)
                         tiles[row][col].push(Rank.FLAG)
                     else if (matrix_includes(red_bomb_positions, [row, col]))
@@ -55,29 +55,35 @@ class Stratego extends React.Component {
                     else
                         tiles[row][col].push(red_pieces.splice(Math.floor(Math.random() * red_pieces.length), 1).pop())
                 } else {
-                    tiles[row][col] = null
+                    tiles[row][col] = null                    
                 }
             }
         }
 
-        return tiles;
+        return tiles
     }
 
     handleShuffle() {
         this.setState({
+            selected: null,
+            highlighted: null,
             board: this.setup()
         });
     }
 
     handleStart() {
         this.setState({
-            mode: Mode.PLAY
+            mode: Mode.PLAY,
+            selected: null,
+            highlighted: null,
         });
     }
 
     handleSurrender() {
         this.setState({
-            mode: Mode.FINISH
+            mode: Mode.FINISH,
+            selected: null,
+            highlighted: null,
         });
 
         /* TO DO: RECORD A LOSS FOR PLAYER ON SERVER */
@@ -86,8 +92,9 @@ class Stratego extends React.Component {
     handlePlayAgain() {
         this.setState({
             mode: Mode.SETUP,
-            board: this.setup(),
-            moves: [],
+            selected: null,
+            highlighted: null,
+            board: this.setup()
         });
     }
 
@@ -95,15 +102,35 @@ class Stratego extends React.Component {
         let new_board = this.state.board
 
         if (this.state.mode === Mode.SETUP) {
-            if (!this.state.selected && !this.state.highlighted) {
-                if (new_board[row][col]) {
-                    console.log("piece selected")
-    
+            if (!this.state.selected) {
+                if (new_board[row][col] && new_board[row][col][COLOR] === Color.RED) {
+                    console.log("your piece selected")
+
                     this.setState({
                         selected: [row, col],
                     })
                 } else {
                     console.log("no piece")
+                }
+            } else {    // if a piece is already selected
+                if (row  === this.state.selected[ROW] && col === this.state.selected[COL]) { // and the user clicks on the selected piece again
+                    console.log("piece deselected")
+                    this.setState({
+                        selected: null
+                    })
+                } else if (RED_ROWS.includes(row)) {
+                    console.log("swapped position")
+                    let piece_row = this.state.selected[ROW]
+                    let piece_col = this.state.selected[COL]
+                    let piece = new_board[piece_row][piece_col]
+    
+                    new_board[piece_row][piece_col] = new_board[row][col]
+                    new_board[row][col] = piece
+    
+                    this.setState({
+                        board: new_board,
+                        selected: null
+                    })
                 }
             }
 
@@ -135,19 +162,18 @@ class Stratego extends React.Component {
                     let piece_row = this.state.selected[ROW]
                     let piece_col = this.state.selected[COL]
                     let piece = new_board[piece_row][piece_col]
+
+                    new_board = handleMove(this.state.board, piece_row, piece_col, row, col)
                     const target_piece = new_board[row][col];
-    
-                    new_board[piece_row][piece_col] = null
-                    new_board[row][col] = piece
                     const new_move = new Move(piece,[piece_row,piece_col],target_piece,[row,col]);
                     const moves = [new_move, ...this.state.moves];
-    
+
                     this.setState({
                         board: new_board,
                         selected: null,
                         highlighted: null,
                         moves: moves,
-                    });
+                    })
                 } else
                     console.log("tile is not reachable")
             }
@@ -171,6 +197,7 @@ class Stratego extends React.Component {
 
                 {<Board mode= {this.state.mode}
                         board={this.state.board}
+                        selected = {this.state.selected}
                         highlighted = {this.state.highlighted}
                         selectTile={this.selectTile}
                         />}
@@ -338,5 +365,5 @@ function getHighlighted(board, row, col) {
     return highlighted
 }
 
-export {IMPASSABLES, COLOR, RANK, Mode, Color, Rank};
+export {IMPASSABLES, COLOR, RANK, ROW, COL, Mode, Color, Rank};
 export default Stratego;
