@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserTesting {
-
+/*
     private List<User> users;
 
     private static UserTesting instance = null;
@@ -72,6 +72,6 @@ public class UserTesting {
 
         return true;
     }
-
+*/
 
 }

@@ -20,7 +20,7 @@ public class GameController {
         return gameRespository.findAll();
     }
 
-    @PostMapping(path = "/createGame")
+        @PostMapping(path = "/createGame")
     public Game createGame() {
         int winLose = 1;
         String time = "1:00";

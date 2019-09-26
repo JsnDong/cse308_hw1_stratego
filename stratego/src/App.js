@@ -8,17 +8,20 @@ import SignUp from './components/signup.jsx';
 import Account from './components/account.jsx';
 import Stratego from './components/Stratego.jsx';
 
+import Test from './components/test.jsx';
+
 class App extends Component {
 	render() {
 		return (
 			<Router>
 				<div className="App">
 					<Switch>
-						<Route exact path="/" component={Login}/>
-						<Route exact path="/login" component={Login}/>
-						<Route exact path="/play" component={Stratego}/>
-						<Route exact path="/signup" component={SignUp}/>
-						<Route exact path="/account" component={Account}/>
+						<Route exact path="/" component={Login} />
+						<Route exact path="/login" component={Login} />
+						<Route exact path="/play" component={Stratego} />
+						<Route exact path="/signup" component={SignUp} />
+						<Route exact path="/account" component={Account} />
+						<Route exact path="/test" component={Test} />
 					</Switch>
 				</div>
 			</Router>
