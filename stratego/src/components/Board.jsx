@@ -5,7 +5,7 @@ import {Tile} from "./Tile.jsx"
 
 class Board extends React.Component {
   render() {
-    const {mode, board, highlighted, selectTile} = this.props;
+    const {mode, board, selected, highlighted, selectTile} = this.props;
 
     let board_class = "board"
 
@@ -17,6 +17,7 @@ class Board extends React.Component {
       for (let col = 0; col < board.length; col++) {
         tiles_row.push(<Tile mode={mode}
                              board={board}
+                             selected = {selected}
                              highlighted = {highlighted}
                              selectTile={selectTile}
                              row={row}
