@@ -2,6 +2,8 @@ import React from 'react';
 import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
 import {Board} from "./Board.jsx"
 import {handleMove} from "../game/validation.js"
+import {Move} from "../Move.js";
+import MoveHistory from "./MoveHistory.jsx";
 //import Scoreboard from "./Scoreboard.jsx"
 
 class Stratego extends React.Component {
@@ -11,7 +13,8 @@ class Stratego extends React.Component {
             mode: Mode.SETUP,
             board: this.setup(),
             selected: null,
-            highlighted: null
+            highlighted: null,
+            moves: [],
         }
         this.selectTile = this.selectTile.bind(this)
 
@@ -58,7 +61,7 @@ class Stratego extends React.Component {
             }
         }
 
-        return tiles
+        return tiles;
     }
 
     handleShuffle() {
@@ -84,7 +87,8 @@ class Stratego extends React.Component {
     handlePlayAgain() {
         this.setState({
             mode: Mode.SETUP,
-            board: this.setup()
+            board: this.setup(),
+            moves: [],
         });
     }
 
@@ -131,16 +135,18 @@ class Stratego extends React.Component {
                     let piece_row = this.state.selected[ROW]
                     let piece_col = this.state.selected[COL]
                     let piece = new_board[piece_row][piece_col]
-                    
+
                     new_board = handleMove(this.state.board, piece_row, piece_col, row, col)
-                    
-                    //new_board[piece_row][piece_col] = null
-                    //new_board[row][col] = piece
+                    const target_piece = new_board[row][col];
+                    const new_move = new Move(piece,[piece_row,piece_col],target_piece,[row,col]);
+                    const moves = [new_move, ...this.state.moves];
+
                     this.setState({
                         board: new_board,
                         selected: null,
-                        highlighted: null
-                    })
+                        highlighted: null,
+                        moves: moves,
+                    });
                 } else
                     console.log("tile is not reachable")
             }
@@ -167,6 +173,7 @@ class Stratego extends React.Component {
                         highlighted = {this.state.highlighted}
                         selectTile={this.selectTile}
                         />}
+                {<MoveHistory moves={this.state.moves}/>}
             </div>
         );
     }
