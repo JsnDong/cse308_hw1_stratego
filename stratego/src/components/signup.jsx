@@ -95,6 +95,9 @@ class signup extends Component {
 			);
 		}
 	}
+	isAuthenticated() {
+		return false;
+	}
 }
 
 export default signup;
