@@ -18,7 +18,34 @@ class signup extends Component {
 		this.setState({ [field]: e.target.value });
 	};
 
+	handleSignUp = (e) => {
+		const data = {
+			username: this.state.username,
+			password: this.state.password
+		};
+		e.preventDefault();
+
+		fetch('http://localhost:8000/signup/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+			.then((res) => res.json())
+			.then((json) => {
+				if (json.hasOwnProperty('token')) {
+					this.setState({ redirect: true });
+				} else {
+					this.setState({ errors: 'Error signing up! Try a different username' });
+				}
+			});
+	}
+
 	render() {
+		if (this.isAuthenticated()) {
+			return <Redirect exact to="/play"/>;
+		}
 		if (this.state.redirect) {
 			return <Redirect exact to="/login" />;
 		} else {

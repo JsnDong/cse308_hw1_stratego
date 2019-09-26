@@ -13,18 +13,13 @@
 .tile {
   display: inline-block;
   vertical-align: top;
-  border: 1px solid #999;
+  border: 1px solid grey;
   height: 50px;
   width: 50px;
 }
 
-.passable {
-  border: 1px solid grey;
-}
-
 .impassable {
   background-color: grey;
-  border: 1px solid grey;
 }
 
 .piece {
@@ -45,4 +40,12 @@
 
 .hidden {
   display: none;
+}
+
+.highlighted {
+  background-color: yellow; 
+}
+
+.danger {
+  background-color: orange; 
 }

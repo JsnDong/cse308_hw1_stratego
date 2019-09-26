@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import '../stylesheets/App.css';
 
 class Scoreboard extends React.Component {
     render() {
