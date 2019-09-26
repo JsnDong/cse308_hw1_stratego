@@ -53,7 +53,7 @@ class login extends Component {
 					<div className="box-container"> 
 					<h1 className="Title">Log In</h1>
 						<form className="login_form" onSubmit={this.handleSubmit}>
-							<FormGroup controlId="email" bsSize="large">
+							<FormGroup controlId="formBasicText" bsSize="large">
 								<FormControl
 								autoFocus
 								type="text"
