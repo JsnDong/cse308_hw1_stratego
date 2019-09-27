@@ -3,9 +3,6 @@ import { Redirect, Link } from 'react-router-dom';
 
 class account extends Component {
 	render() {
-		if (!this.isAuthenticated()) {
-			return <Redirect exact to="/login"/>;
-		}
 
 		return (
 			<div className="info">
@@ -22,10 +19,6 @@ class account extends Component {
 				</div>
 			</div>
 		);
-	}
-
-	isAuthenticated() {
-		return false;
 	}
 }
 export default account;

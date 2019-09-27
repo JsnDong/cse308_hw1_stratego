@@ -8,6 +8,7 @@ import SignUp from './components/signup.jsx';
 import Account from './components/account.jsx';
 import Stratego from './components/Stratego.jsx';
 import Replay from './components/Replay.jsx';
+import PrivateRoute from './components/PrivateRoute.jsx';
 
 import Test from './components/test.jsx';
 
@@ -20,9 +21,9 @@ class App extends Component {
 					<Switch>
 						<Route exact path="/" component={Login} />
 						<Route exact path="/login" component={Login} />
-						<Route exact path="/play" component={Stratego} />
+						<PrivateRoute exact path="/play" component={Stratego} />
 						<Route exact path="/signup" component={SignUp} />
-						<Route exact path="/account" component={Account} />
+						<PrivateRoute exact path="/account" component={Account} />
 						<Route exact path="/test" component={Test} />
 						<Route exact path="/replay" component={Replay}/>
 					</Switch>

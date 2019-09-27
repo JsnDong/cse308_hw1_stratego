@@ -66,6 +66,7 @@ public class UserController {
         }
         if (dbUser.getPassword().equals(user.getPassword())) {
             String jwt = Jwts.builder()
+                    .setSubject(user.getUsername())
                     .setExpiration(getExpirationDate())
                     .setIssuedAt(new Date())
                     .signWith(key)
@@ -100,19 +101,22 @@ public class UserController {
 
     @PostMapping (path = "/token-auth")
     @CrossOrigin(origins = "*")
-    public boolean verifyToken(@RequestBody String token) throws JSONException {
-        System.out.println("connected");
+    public ResponseEntity verifyToken(@RequestBody String token) throws JSONException {
         Jws<Claims> jws;
         try {
             jws = Jwts.parser()
                     .setSigningKey(key)
                     .parseClaimsJws(token);
             Date expirationDate = jws.getBody().getExpiration();
-            System.out.println(expirationDate.toString());
-            return new Date().before(expirationDate);
+            boolean isExpired = new Date().after(expirationDate);
+            if (isExpired) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+            else {
+                return ResponseEntity.ok(jws.getBody().getSubject());
+            }
         } catch (JwtException e) {
-            System.out.println(e);
-            return false;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
     }
