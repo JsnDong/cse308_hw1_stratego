@@ -1,7 +1,7 @@
 import React from 'react';
 import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
 import {Board} from "./Board.jsx"
-import {handleMove} from "../game/validation.js"
+import {handleMove, isWon} from "../game/validation.js"
 import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
 
@@ -13,6 +13,7 @@ class Stratego extends React.Component {
         this.state = {
             mode: Mode.SETUP,
             board: this.setup(),
+            turn: Color.RED,
             selected: null,
             highlighted: null,
             moves: [],
@@ -36,6 +37,7 @@ class Stratego extends React.Component {
         let red_bomb_positions = getBombPositions(Color.RED, red_flag_col)
         let red_pieces = getPieces()
 
+        // Piece represnted as [Color, Rank, isVisible]
         for (let row = 0; row < DIMENSION; row++) {
             for (let col = 0; col < DIMENSION; col++) {
                 if (BLUE_ROWS.includes(row)) {
@@ -46,6 +48,7 @@ class Stratego extends React.Component {
                         tiles[row][col].push(Rank.BOMB)
                     else
                         tiles[row][col].push(blue_pieces.splice(Math.floor(Math.random() * blue_pieces.length), 1).pop())
+                    tiles[row][col].push(false)    
                 } else if (RED_ROWS.includes(row)) {
                     tiles[row][col] = [Color.RED]
                     if (row === RED_FLAG_ROW && col === red_flag_col)
@@ -54,6 +57,7 @@ class Stratego extends React.Component {
                         tiles[row][col].push(Rank.BOMB)
                     else
                         tiles[row][col].push(red_pieces.splice(Math.floor(Math.random() * red_pieces.length), 1).pop())
+                    tiles[row][col].push(false)
                 } else {
                     tiles[row][col] = null                    
                 }
@@ -136,9 +140,9 @@ class Stratego extends React.Component {
 
         } else if (this.state.mode === Mode.PLAY) {
             if (!this.state.selected && !this.state.highlighted) {
-                if (new_board[row][col]) {
+                if (new_board[row][col] && new_board[row][col][COLOR] === this.state.turn) {
                     console.log("piece selected")
-                    let new_highlighted = getHighlighted(new_board, row, col);
+                    let new_highlighted = getHighlighted(new_board, this.state.turn, row, col);
     
                     this.setState({
                         selected: new_highlighted.length? [row, col]: null,
@@ -147,7 +151,7 @@ class Stratego extends React.Component {
     
                     if (!new_highlighted.length) console.log("piece can't move")
                 } else {
-                    console.log("no piece")
+                    console.log("not one of your pieces piece")
                 }
             } else if (this.state.selected && this.state.highlighted) {
                 if (row  === this.state.selected[ROW] && col === this.state.selected[COL]) {
@@ -163,17 +167,31 @@ class Stratego extends React.Component {
                     let piece_col = this.state.selected[COL]
                     let piece = new_board[piece_row][piece_col]
 
+<<<<<<< HEAD
+=======
                     new_board = handleMove(this.state.board, piece_row, piece_col, row, col)
+
+>>>>>>> origin/isWonCondition
                     const target_piece = new_board[row][col];
+                    console.log(piece, target_piece)
                     const new_move = new Move(piece,[piece_row,piece_col],target_piece,[row,col]);
                     const moves = [new_move, ...this.state.moves];
+                    new_board = handleMove(this.state.board, piece_row, piece_col, row, col)
 
                     this.setState({
                         board: new_board,
+                        turn: this.state.turn === Color.RED ? Color.BLUE : Color.RED, 
                         selected: null,
                         highlighted: null,
                         moves: moves,
+<<<<<<< HEAD
+                    }, () => {console.log(this.state.turn)} )
+=======
                     })
+                    let enemyColor = "RED";
+                    if(piece[0] === "RED") { enemyColor = "BLUE"}
+                    console.log("did you win?: " + isWon(this.state.board, enemyColor));
+>>>>>>> origin/isWonCondition
                 } else
                     console.log("tile is not reachable")
             }
@@ -183,6 +201,8 @@ class Stratego extends React.Component {
     }
 
     render() {
+        console.log(this.state.board)
+
         let shuffle_disabled = this.state.mode !== Mode.SETUP
         let start_disabled = this.state.mode !== Mode.SETUP
         let surrender_disabled = this.state.mode !== Mode.PLAY
@@ -302,16 +322,16 @@ function getPieces() {
     return pieces;
 }
 
-function getHighlighted(board, row, col) {
-    let highlighted = []
-    let rank = board[row][col][RANK]
+function getHighlighted(board, turn, row, col) {
+    const rank = board[row][col][RANK]
 
+    let highlighted = []
     if (rank !== Rank.FLAG && rank !== Rank.BOMB) {
         if (rank === Rank.SCOUT) {
             for (let highlighted_row = row - 1, i = true; highlighted_row > -1 && i; highlighted_row--) {
-                if ((board[highlighted_row][col] && board[highlighted_row][col][COLOR] === Color.RED) || matrix_includes(IMPASSABLES, [highlighted_row, col]))
+                if ((board[highlighted_row][col] && board[highlighted_row][col][COLOR] === turn) || matrix_includes(IMPASSABLES, [highlighted_row, col]))
                     i = false
-                else if (board[highlighted_row][col] && board[highlighted_row][col][COLOR] !== Color.RED) {
+                else if (board[highlighted_row][col] && board[highlighted_row][col][COLOR] !== turn) {
                     highlighted.push([highlighted_row, col])
                     i = false
                 }
@@ -319,9 +339,9 @@ function getHighlighted(board, row, col) {
                     highlighted.push([highlighted_row, col])
             }
             for (let highlighted_row = row + 1, i = true; highlighted_row < DIMENSION && i; highlighted_row++) {
-                if ((board[highlighted_row][col] && board[highlighted_row][col][COLOR] === Color.RED) || matrix_includes(IMPASSABLES, [highlighted_row, col]))
+                if ((board[highlighted_row][col] && board[highlighted_row][col][COLOR] === turn) || matrix_includes(IMPASSABLES, [highlighted_row, col]))
                     i = false
-                else if (board[highlighted_row][col] && board[highlighted_row][col][COLOR] !== Color.RED) {
+                else if (board[highlighted_row][col] && board[highlighted_row][col][COLOR] !== turn) {
                     highlighted.push([highlighted_row, col])
                     i = false
                 }
@@ -330,9 +350,9 @@ function getHighlighted(board, row, col) {
             }
 
             for (let highlighted_col = col - 1, i = true; highlighted_col > -1 && i; highlighted_col--) {
-                if ((board[row][highlighted_col] && board[row][highlighted_col][COLOR] === Color.RED) || matrix_includes(IMPASSABLES, [row, highlighted_col]))
+                if ((board[row][highlighted_col] && board[row][highlighted_col][COLOR] === turn) || matrix_includes(IMPASSABLES, [row, highlighted_col]))
                     i = false
-                else if (board[row][highlighted_col] && board[row][highlighted_col][COLOR] !== Color.RED) {
+                else if (board[row][highlighted_col] && board[row][highlighted_col][COLOR] !== turn) {
                     highlighted.push([row, highlighted_col])
                     i = false
                 }
@@ -340,9 +360,9 @@ function getHighlighted(board, row, col) {
                     highlighted.push([row, highlighted_col])
             }
             for (let highlighted_col = col + 1, i = true; highlighted_col < DIMENSION && i; highlighted_col++) {
-                if ((board[row][highlighted_col] && board[row][highlighted_col][COLOR] === Color.RED) || matrix_includes(IMPASSABLES, [row, highlighted_col]))
+                if ((board[row][highlighted_col] && board[row][highlighted_col][COLOR] === turn) || matrix_includes(IMPASSABLES, [row, highlighted_col]))
                     i = false
-                else if (board[row][highlighted_col] && board[row][highlighted_col][COLOR] !== Color.RED) {
+                else if (board[row][highlighted_col] && board[row][highlighted_col][COLOR] !== turn) {
                     highlighted.push([row, highlighted_col])
                     i = false
                 }
@@ -350,14 +370,13 @@ function getHighlighted(board, row, col) {
                     highlighted.push([row, highlighted_col])
             }
         } else {
-            console.log(row - 1 > -1 && (!board[row - 1][col] || board[row - 1][col][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row - 1, col]))
-            if (row - 1 > -1 && (!board[row - 1][col] || board[row - 1][col][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row - 1, col]))
+            if (row - 1 > -1 && (!board[row - 1][col] || board[row - 1][col][COLOR] !== turn) && !matrix_includes(IMPASSABLES, [row - 1, col]))
                 highlighted.push([row - 1, col])
-            if (row + 1 < DIMENSION && (!board[row + 1][col] || board[row + 1][col][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row + 1, col]))
+            if (row + 1 < DIMENSION && (!board[row + 1][col] || board[row + 1][col][COLOR] !== turn) && !matrix_includes(IMPASSABLES, [row + 1, col]))
                 highlighted.push([row + 1, col])
-            if (col - 1 > -1 && (!board[row][col - 1] || board[row][col - 1][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row, col - 1]))
+            if (col - 1 > -1 && (!board[row][col - 1] || board[row][col - 1][COLOR] !== turn) && !matrix_includes(IMPASSABLES, [row, col - 1]))
                 highlighted.push([row, col - 1])
-            if (col + 1 < DIMENSION && (!board[row][col + 1] || board[row][col + 1][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row, col + 1]))
+            if (col + 1 < DIMENSION && (!board[row][col + 1] || board[row][col + 1][COLOR] !== turn) && !matrix_includes(IMPASSABLES, [row, col + 1]))
                 highlighted.push([row, col + 1])
         }
     }

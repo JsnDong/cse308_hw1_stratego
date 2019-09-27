@@ -84,11 +84,10 @@ class login extends Component {
 						</form>
 						</div>
 					</div>
-					
 			);
 		}
 	}
-
+	
 	redirectIfAuthenticated() {
 		if (!localStorage.hasOwnProperty('token')) {
 			return false;
