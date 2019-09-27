@@ -1,33 +1,30 @@
-import {Rank}  from '../components/Stratego.jsx'
+import {DIMENSION, COLOR, RANK, ISVISABLE, Rank, getHighlighted}  from '../components/Stratego.jsx'
 
-const size = 10;
 /**
  * Check if enemy's flag is gone or if enemy has no moving pieces left
  * @param {*} board 
  * @param {*} endx 
  * @param {*} endy 
  */
-export const isWon = (board, enemyColor) => {
-    
-    console.log(enemyColor);
-    let hasFlag = false
-    let enemyHasMove = false;
-    for(let i = 0; i < size; i++){
-        for(let j = 0; j < size; j++){
-            if(board[i][j] && (board[i][j][0] === enemyColor) && (Rank.properties[board[i][j][1]] !== 0 ) && (Rank.properties[board[i][j][1]] !== 11 )){
-                enemyHasMove = true;
-            } else if(board[i][j] && (board[i][j][0] === enemyColor) && (Rank.properties[board[i][j][1]] === 0)){
-                hasFlag = true;
-            }
+
+function hasLost(color, scoreboard, board) {
+    const color_index = color === Color.BLUE ? 1 : 2
+
+    const hasFlag = scoreboard[Rank.properties[Rank.FLAG].power + 1][color_index]
+    if (!hasFlag)
+        return true
+
+    let piece, piece_moves
+    for (let row = 0; row < DIMENSION; row++) {
+        for (let col = 0; col < DIMENSION; col++) {
+            piece = board[row][col]
+            piece_moves = getHighlighted(board, color, row, col).length
+            if (piece && piece[COLOR] === color && piece_moves.length)
+                return false
         }
     }
-    if(!enemyHasMove){
-        return true;
-    }
-    if(hasFlag === false){
-        return true;
-    }
-    return false;
+
+    return true
 };
 
 /**
@@ -39,25 +36,34 @@ export const isWon = (board, enemyColor) => {
  * @param {number} targetx - the target tile spot
  * @param {number} targety - the target tile spot
  */
-export const handleMove = (board, actionx, actiony, targetx, targety) => {
-    if(board[targetx][targety] === null){
-        board[targetx][targety] = board[actionx][actiony];
-        board[actionx][actiony] = null;
-        return board;
+export const handleMove = (piece, target_tile) => {
+    let result = {}
+    if (!target_tile) {
+        result.winner = piece
+        result.loser = target_tile
+        return result
     }
-    const power = Rank.properties[board[actionx][actiony][1]].power;
-    const tpower = Rank.properties[board[targetx][targety][1]].power;
-    console.log(power)
-    console.log(tpower)
-    if(((power === 3) && (tpower === 11)) || ((power === 1) && (tpower === 10)) || (tpower < power)){
-        board[targetx][targety]= board[actionx][actiony]; //miner has disarmed a bomb and swapped places
-        board[actionx][actiony] = null;
-    } else if(power === tpower){
-        board[actionx][actiony] = null;
-        board[targetx][targety] = null;
+        
+    const piece_power = Rank.properties[piece[RANK]].power;
+    const target_power = Rank.properties[target_tile[RANK]].power;
+
+    if (piece_power === target_power) {
+        result.winner = null
+        result.loser = null
+        return result
+    } else if ((piece_power > target_power) ||
+        (piece_power === 3 && target_power === 11) ||
+        (piece_power === 1 && target_power === 10)) {
+            result.winner = piece
+            result.loser = target_tile
     } else {
-        board[targetx][targety][2] = true;
-        board[actionx][actiony] =  null; //selfdestruct
+        result.winner = target_tile
+        result.loser = piece
     }
-    return board;
-}; 
+        
+    result.winner[ISVISABLE] = true
+
+    return result
+};
+
+export {hasLost}

@@ -1,9 +1,10 @@
 import React from 'react';
 import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
 import {Board} from "./Board.jsx"
-import {handleMove, isWon} from "../game/validation.js"
+import {handleMove, hasLost} from "../game/validation.js"
 import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
+import { Scoreboard } from './Scoreboard.jsx';
 
 //import Scoreboard from "./Scoreboard.jsx"
 
@@ -13,6 +14,7 @@ class Stratego extends React.Component {
         this.state = {
             mode: Mode.SETUP,
             board: this.setup(),
+            scoreboard: this.setScoreboard(),
             turn: Color.RED,
             selected: null,
             highlighted: null,
@@ -67,6 +69,36 @@ class Stratego extends React.Component {
         return tiles
     }
 
+    setScoreboard() {
+        const ranks = Object.keys(Rank.properties)
+        const header = ["Pieces", "Blue", "Red"]
+
+        let scoreboard = [header]
+
+        let scoreboard_row
+        ranks.forEach(rank => {
+            scoreboard_row = []
+            scoreboard_row.push(rank)
+            scoreboard_row.push(Rank.properties[rank].quantity)
+            scoreboard_row.push(Rank.properties[rank].quantity)
+            scoreboard.push(scoreboard_row)
+        })
+
+        return scoreboard
+    }
+
+    updateScoreboard(color, rank) {
+        const color_index = color === Color.BLUE ? 1 : 2
+        const rank_index = Rank.properties[rank].power + 1
+
+        let scoreboard = this.state.scoreboard
+        scoreboard[rank_index][color_index] = scoreboard[rank_index][color_index] - 1
+
+        this.setState({
+            scoreboard: scoreboard
+        })
+    }
+
     handleShuffle() {
         this.setState({
             selected: null,
@@ -83,14 +115,14 @@ class Stratego extends React.Component {
         });
     }
 
-    handleSurrender() {
+    handleGameOver(result) {
         this.setState({
-            mode: Mode.FINISH,
+            mode: result,
             selected: null,
             highlighted: null,
         });
 
-        /* TO DO: RECORD A LOSS FOR PLAYER ON SERVER */
+        /* TO DO: RECORD RESULT ON BACKEND */
     }
 
     handlePlayAgain() {
@@ -98,7 +130,8 @@ class Stratego extends React.Component {
             mode: Mode.SETUP,
             selected: null,
             highlighted: null,
-            board: this.setup()
+            board: this.setup(),
+            scoreboard: this.setScoreboard()
         });
     }
 
@@ -139,7 +172,7 @@ class Stratego extends React.Component {
             }
 
         } else if (this.state.mode === Mode.PLAY) {
-            if (!this.state.selected && !this.state.highlighted) {
+            if (!this.state.selected) {
                 if (new_board[row][col] && new_board[row][col][COLOR] === this.state.turn) {
                     console.log("piece selected")
                     let new_highlighted = getHighlighted(new_board, this.state.turn, row, col);
@@ -153,7 +186,7 @@ class Stratego extends React.Component {
                 } else {
                     console.log("not one of your pieces piece")
                 }
-            } else if (this.state.selected && this.state.highlighted) {
+            } else if (this.state.selected) {
                 if (row  === this.state.selected[ROW] && col === this.state.selected[COL]) {
                     console.log("piece deselected")
                     this.setState({
@@ -162,21 +195,27 @@ class Stratego extends React.Component {
                     })
                 }
                 else if (matrix_includes(this.state.highlighted, [row, col])) {
-                    console.log("tile selected")
-                    let piece_row = this.state.selected[ROW]
-                    let piece_col = this.state.selected[COL]
-                    let piece = new_board[piece_row][piece_col]
+                    const player = this.state.turn
+                    const opponent = player === Color.BLUE ? Color.RED: Color.BLUE
+                    const piece_row = this.state.selected[ROW]
+                    const piece_col = this.state.selected[COL]
+                    let board = this.state.board
 
-<<<<<<< HEAD
-=======
-                    new_board = handleMove(this.state.board, piece_row, piece_col, row, col)
+                    const piece = board[piece_row][piece_col]
+                    const target_tile = board[row][col]
+                    const move = new Move(piece, [piece_row, piece_col], target_tile, [row, col]);
 
->>>>>>> origin/isWonCondition
-                    const target_piece = new_board[row][col];
-                    console.log(piece, target_piece)
-                    const new_move = new Move(piece,[piece_row,piece_col],target_piece,[row,col]);
-                    const moves = [new_move, ...this.state.moves];
-                    new_board = handleMove(this.state.board, piece_row, piece_col, row, col)
+                    const {winner, loser} = handleMove(piece, target_tile)
+                    const moves = [move, ...this.state.moves];
+
+                    board[piece_row][piece_col] = null
+                    board[row][col] = winner
+                    if (winner && loser) {
+                        this.updateScoreboard(loser[COLOR], loser[RANK])
+                    } else if (!winner && !loser) {
+                        this.updateScoreboard(piece[COLOR], piece[RANK])
+                        this.updateScoreboard(target_tile[COLOR], target_tile[RANK])
+                    }
 
                     this.setState({
                         board: new_board,
@@ -184,14 +223,17 @@ class Stratego extends React.Component {
                         selected: null,
                         highlighted: null,
                         moves: moves,
-<<<<<<< HEAD
-                    }, () => {console.log(this.state.turn)} )
-=======
                     })
-                    let enemyColor = "RED";
-                    if(piece[0] === "RED") { enemyColor = "BLUE"}
-                    console.log("did you win?: " + isWon(this.state.board, enemyColor));
->>>>>>> origin/isWonCondition
+
+                    const scoreboard = this.state.scoreboard
+                    board = this.state.board
+
+                    if (hasLost(player, scoreboard, board) && hasLost(opoonent, scoreboard, board))
+                        this.handleGameOver(Mode.DRAW)
+                    else if (hasLost(player, scoreboard, board))
+                        this.handleGameOver(Mode.LOST)
+                    else if (hasLost(opponent, scoreboard, board))
+                        this.handleGameOver(Mode.WON)
                 } else
                     console.log("tile is not reachable")
             }
@@ -201,7 +243,7 @@ class Stratego extends React.Component {
     }
 
     render() {
-        console.log(this.state.board)
+        console.log(this.state.scoreboard)
 
         let shuffle_disabled = this.state.mode !== Mode.SETUP
         let start_disabled = this.state.mode !== Mode.SETUP
@@ -221,7 +263,8 @@ class Stratego extends React.Component {
                         highlighted = {this.state.highlighted}
                         selectTile={this.selectTile}
                         />}
-                {<MoveHistory moves={this.state.moves}/>}
+                {<Scoreboard scoreboard={this.state.scoreboard} />}
+                {<MoveHistory moves={this.state.moves} />}
             </div>
         );
     }
@@ -236,6 +279,7 @@ const ROW = 0;
 const RED_FLAG_ROW = 9;
 const RANK = 1;
 const COL = 1;
+const ISVISABLE = 2;
 const BLUE_ROWS = [0,1,2,3];
 const RED_ROWS = [6,7,8,9];
 const IMPASSABLES = [[4,2],[5,2],
@@ -248,7 +292,9 @@ const IMPASSABLES = [[4,2],[5,2],
 const Mode = {
     SETUP: "SETUP",
     PLAY: "PLAY",
-    FINISH: "FINISH"
+    WON: "WON",
+    LOST: "LOST",
+    DRAW: "DRAW",
 }
 
 const Color = {
@@ -384,5 +430,5 @@ function getHighlighted(board, turn, row, col) {
     return highlighted
 }
 
-export {IMPASSABLES, COLOR, RANK, ROW, COL, Mode, Color, Rank};
+export {IMPASSABLES, COLOR, RANK, ISVISABLE, ROW, COL, Mode, Color, Rank, getHighlighted};
 export default Stratego;
