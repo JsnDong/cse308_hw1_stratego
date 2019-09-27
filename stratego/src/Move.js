@@ -1,26 +1,63 @@
+import {Rank} from './components/Stratego.jsx';
+
+
 class Move {
 	constructor(startPiece,startTile,targetPiece,targetTile) {
-		this.startPiece = startPiece;
-		this.startTile = startTile;
+		const [startRow, startCol] = startTile;
+		const [endRow, endCol] = targetTile;
+		const [startColor,startRank] = startPiece;
+		const startPower = Rank.properties[startRank].power;
+
+		this.startRow = startRow;
+		this.startCol = startCol;
+		this.endRow = endRow;
+		this.endCol = endCol;
+		this.startColor = startColor;
+		this.startRank = startRank;
+		this.startPower = startPower;
 		this.targetPiece = targetPiece;
-		this.targetTile = targetTile;
 	}
 
 	toString() {
-		const [startRow, startCol] = this.startTile;
-		const [endRow, endCol] = this.targetTile;
-		const [startColor,startRank] = this.startPiece;
-		// hide rank of AI 
-		const rank = startColor == "RED" ? startRank : "Piece";
+		// obstruct rank for AI move
+		const rank = this.startColor == "RED" ? this.startRank : "Piece";
+		const startMessage = rank + " (" + this.startColor[0] + ") at (" + this.startRow + "," + this.startCol + ") ";
 
-		const startMessage = rank + " (" + startColor[0] + ") at (" + startRow + "," + startCol + ") ";
-		let actionMessage = " moved to (" + endRow + "," + endCol + ")";
-		if (this.targetPiece !== null) {
-			const [endColor,endRank] = this.targetPiece;
-			actionMessage = "captured " + endRank + "(" + endColor[0] + ") at (" + endRow + "," + endCol + ")";
+		if (this.targetPiece === null) {
+			return startMessage + this.constructMoveMessage();
 		}
 
-		return startMessage + actionMessage;
+		const [endColor, endRank] = this.targetPiece;
+		const endPower = Rank.properties[endRank].power;
+		if (this.startPower == endPower) {
+			return this.constructBothCaptureMessage();
+		}
+		else {
+			return startMessage + this.constructSingleCaptureMessage();
+		}
+	}
+
+	constructMoveMessage() {
+		return " moved to (" + this.endRow + "," + this.endCol + ")";
+	}
+
+	constructSingleCaptureMessage() {
+		const [endColor, endRank] = this.targetPiece;
+		const endPower = Rank.properties[endRank].power;
+		if (this.startPower < endPower) {
+			return "got captured at (" + this.endRow + "," + this.endCol + ")!";
+		}
+		else {
+			return "captured " + endRank + "(" + endColor[0] + ") at (" + this.endRow + "," + this.endCol + ")";
+		}
+	}
+
+	constructBothCaptureMessage() {
+		const [endColor, endRank] = this.targetPiece;
+		const endPower = Rank.properties[endRank].power;
+		const startPiece = this.startRank + " (" + this.startColor[0] + ")";
+		const endPiece = endRank + " (" + endColor[0] + ") ";
+		return "Both " + startPiece + " and " + endPiece + "got captured at (" + this.endRow + "," + this.endCol + ")!";
 	}
 }
 

@@ -7,8 +7,10 @@ import Login from './components/login.jsx';
 import SignUp from './components/signup.jsx';
 import Account from './components/account.jsx';
 import Stratego from './components/Stratego.jsx';
+import Replay from './components/Replay.jsx';
 
 import Test from './components/test.jsx';
+
 
 class App extends Component {
 	render() {
@@ -22,6 +24,7 @@ class App extends Component {
 						<Route exact path="/signup" component={SignUp} />
 						<Route exact path="/account" component={Account} />
 						<Route exact path="/test" component={Test} />
+						<Route exact path="/replay" component={Replay}/>
 					</Switch>
 				</div>
 			</Router>
