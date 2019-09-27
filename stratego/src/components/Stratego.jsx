@@ -167,11 +167,6 @@ class Stratego extends React.Component {
                     let piece_col = this.state.selected[COL]
                     let piece = new_board[piece_row][piece_col]
 
-<<<<<<< HEAD
-=======
-                    new_board = handleMove(this.state.board, piece_row, piece_col, row, col)
-
->>>>>>> origin/isWonCondition
                     const target_piece = new_board[row][col];
                     console.log(piece, target_piece)
                     const new_move = new Move(piece,[piece_row,piece_col],target_piece,[row,col]);
@@ -184,14 +179,12 @@ class Stratego extends React.Component {
                         selected: null,
                         highlighted: null,
                         moves: moves,
-<<<<<<< HEAD
-                    }, () => {console.log(this.state.turn)} )
-=======
-                    })
+                    }, () => {console.log(this.state.turn)
+                    });
+                    
                     let enemyColor = "RED";
                     if(piece[0] === "RED") { enemyColor = "BLUE"}
                     console.log("did you win?: " + isWon(this.state.board, enemyColor));
->>>>>>> origin/isWonCondition
                 } else
                     console.log("tile is not reachable")
             }
