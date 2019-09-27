@@ -1,0 +1,37 @@
+.tile {
+	display: inline-block;
+	vertical-align: top;
+	font-weight: bold;
+	color: black;
+	background-color: linen;
+	border: 1px solid black;
+	height: 50px;
+	width: 50px;
+}
+.blue {
+	background-color: royalblue;
+}
+
+.red {
+	background-color: firebrick;
+}
+
+.hidden {
+	display: none;
+}
+
+.selected {
+	background-color: red;
+}
+
+.highlighted {
+	background-color: gold;
+}
+
+.danger {
+	background-color: rebeccapurple;
+}
+
+.impassable {
+	background-color: slategray;
+}

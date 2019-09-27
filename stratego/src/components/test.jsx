@@ -6,97 +6,105 @@ class test extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			usernameGet: 'TESTuser1',
-			usernamePut: 'd',
-			passwordPut: 'c',
-			testingList: [ 1, 2, 3 ]
-		};
-	}
-
-	getAllInfo() {
-		axios.get('http://localhost:8080/allUsers').then(
-			(res) => {
-				alert('Received Successful response from server!');
-				console.log(res);
-			},
-			(err) => {
-				alert('Server rejected response with: ' + err);
-			}
-		);
-	}
-
-	getSingleInfo(username) {
-		axios.get('http://localhost:8080/users/' + username).then(
-			(res) => {
-				alert('Received Successful response from server!');
-				console.log(res);
-			},
-			(err) => {
-				alert('Server rejected response with: ' + err);
-			}
-		);
-	}
-
-	createUser(username, password) {
-		var user = {
-			username: "pop",
-			password: "lol"
-		};
-		axios.post('http://localhost:8080/userPost', user).then(
-			(response) => {
-				alert('Received Successful response from server!');
-				console.log(response);
-			},
-			(error) => {
-				console.log(error);
-			}
-		);
-	}
-
-	passList(username, password, testList) {
-		axios
-			.post('http://localhost:8080/userList', {
-				username: username,
-				password: [
-					{
-						startRow: 1,
-						startCol: 2,
-						endRow: 3,
-						endCol: 4
-					},
-					{
-						startRow: 1,
-						startCol: 2,
-						endRow: 3,
-						endCol: 4
-					}
-				]
-			})
-			.then(
-				(response) => {
-					alert('Received Successful response from server!');
-					console.log(response);
+			username: 'testingGame',
+			winLose: 0, //0 = Lose, 1 = Win
+			time: '15:00',
+			moveList: [
+				{
+					startRow: 1,
+					startCol: 2,
+					endRow: 3,
+					endCol: 4
 				},
-				(error) => {
-					console.log(error);
+				{
+					startRow: 1,
+					startCol: 2,
+					endRow: 3,
+					endCol: 4
 				}
-			);
+			],
+			startList: [
+				[ 1, 2, 3, 4, 5, 6 ],
+				[ 7, 8, 9, 10, 11, 12, 13 ],
+				[ 14, 15, 16, 17, 18 ],
+				[ null, null ],
+				[ 19, 20 ],
+				[ 21, 22 ],
+				[ 23, 24 ]
+			]
+		};
 	}
+
+	createGame = (e) => {
+		const game = {
+			username: this.state.username,
+			winLose: this.state.winLose,
+			time: this.state.time,
+			moveList: this.state.moveList,
+			startList: this.state.startList
+		};
+		e.preventDefault();
+
+		axios.post('http://localhost:8080/createGame', game).then(
+			(res) => {
+				alert('Received Successful response from server!');
+				console.log(res);
+			},
+			(err) => {
+				alert('Server rejected response with: ' + err);
+			}
+		);
+	};
+
+	getInfo = (e) => {
+		e.preventDefault();
+		const username = this.state.username;
+		axios.get('http://localhost:8080/getInfo/' + username).then(
+			(res) => {
+				alert('Received Successful response from server!');
+				console.log(res);
+			},
+			(err) => {
+				alert('Server rejected response with: ' + err);
+			}
+		);
+	};
+
+	getHistory = (e) => {
+		e.preventDefault();
+		const username = this.state.username;
+		axios.get('http://localhost:8080/getHistory/' + username).then(
+			(res) => {
+				alert('Received Successful response from server!');
+				console.log(res);
+			},
+			(err) => {
+				alert('Server rejected response with: ' + err);
+			}
+		);
+	};
+
+	getGame = (e) => {
+		e.preventDefault();
+		const id = 18; // CHANGE ID
+		axios.get('http://localhost:8080/getGame/' + id).then(
+			(res) => {
+				alert('Received Successful response from server!');
+				console.log(res);
+			},
+			(err) => {
+				alert('Server rejected response with: ' + err);
+			}
+		);
+	};
 
 	render() {
 		return (
 			<div className="info">
-				<button onClick={this.getAllInfo}>Get All User Request!</button>
-				<button onClick={() => this.getSingleInfo(this.state.usernamePut)}>Get Single User Request!</button>
-				<button onClick={() => this.createUser(this.state.usernamePut, this.state.passwordPut)}>
-					Create User Request!
-				</button>
-				<button
-					onClick={() =>
-						this.passList(this.state.usernamePut, this.state.passwordPut, this.state.testingList)}
-				>
-					Trying to Pass List
-				</button>
+				<button onClick={this.createGame}>Create Game!</button>
+				<button onClick={this.getInfo}>Get Account Info!</button>
+				<button onClick={this.getHistory}>Get All Game!</button>
+				<button onClick={this.getGame}>Get One Game!</button>
 			</div>
 		);
 	}

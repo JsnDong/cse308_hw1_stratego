@@ -2,26 +2,18 @@ package Stratego308.StrategoDemo.Controller;
 
 import Stratego308.StrategoDemo.Entity.User;
 import Stratego308.StrategoDemo.Repository.UsersRepository;
-import Stratego308.StrategoDemo.Testing.UserTesting;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.fasterxml.jackson.databind.util.JSONWrappedObject;
 import io.jsonwebtoken.*;
-import jdk.nashorn.internal.runtime.JSONFunctions;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
-import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class UserController {
@@ -31,21 +23,12 @@ public class UserController {
     @Autowired
     UsersRepository userRepository;
 
-    @RequestMapping(value = "/pong", method = RequestMethod.GET)
-    @CrossOrigin(origins = "*")
-    public String index() {
-        return "asdfasf";
-    }
-
-    //UserTesting userTesting = UserTesting.getInstance();
-
     @GetMapping (path = "/allUsers")
     @CrossOrigin(origins = "*")
     public List<User> allUsers() {
         return userRepository.findAll();
     }
 
-    //@RequestMapping(value = "/post", method = RequestMethod.POST)
     @PostMapping (path = "/userPost")
     @CrossOrigin(origins = "*")
     public ResponseEntity create(@RequestBody User user) {
@@ -76,7 +59,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-
 
     @PostMapping (path = "/userList")
     @CrossOrigin(origins = "*")
