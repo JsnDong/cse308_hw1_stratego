@@ -162,10 +162,24 @@ class Stratego extends React.Component {
         else if (result == Mode.DRAW)
             winLose = 2
 
+
+        const timer = this.props.duration
+        const minutes = Math.floor(timer / 1000 / 60)
+        const seconds = Math.floor(timer / 1000 % 60)
+
+        let display
+        if (minutes < 10 && seconds < 10) {
+            display = "0" + minutes + ":0" + seconds
+        } else if (minutes < 10) {
+            display = "0" + minutes + ":" + seconds
+        } else {
+            display = + minutes + ":" + seconds
+        }
+
         const game = {
             username: this.state.username,
             winLose: winLose,
-            time: "12:00",
+            time: display,
             moveList: this.state.moves,
             startList: this.state.initialBoard
         };
