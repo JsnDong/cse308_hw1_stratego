@@ -30,6 +30,8 @@ class Stratego extends React.Component {
         this.handleStart = this.handleStart.bind(this)
         this.handleSurrender = this.handleSurrender.bind(this)
         this.handlePlayAgain = this.handlePlayAgain.bind(this)
+        this.handleDraw = this.handleDraw.bind(this)
+        this.handleWin = this.handleWin.bind(this)
     }
 
     setup() {
@@ -164,7 +166,7 @@ class Stratego extends React.Component {
             winLose = 2
 
 
-        const timer = this.props.duration
+        const timer = this.state.duration
         const minutes = Math.floor(timer / 1000 / 60)
         const seconds = Math.floor(timer / 1000 % 60)
 
@@ -176,6 +178,7 @@ class Stratego extends React.Component {
         } else {
             display = + minutes + ":" + seconds
         }
+        console.log(display)
 
         const game = {
             username: this.state.username,
@@ -199,6 +202,14 @@ class Stratego extends React.Component {
 
     handleSurrender() {
         this.handleGameOver(Mode.LOST)
+    }
+
+    handleDraw() {
+        this.handleGameOver(Mode.DRAW)
+    }
+
+    handleWin() {
+        this.handleGameOver(Mode.WON)
     }
 
     handleLogOut() {
@@ -324,6 +335,8 @@ class Stratego extends React.Component {
             <div className="stratego">
                 <button onClick={this.handleShuffle} disabled={shuffle_disabled}>Shuffle</button>
                 <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
+                <button onClick={this.handleWin} disabled={surrender_disabled}>Win</button>
+                <button onClick={this.handleDraw} disabled={surrender_disabled}>Draw</button>
                 <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
                 <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
                 <Link to="/account" style={{ textDecoration: 'none' }}>

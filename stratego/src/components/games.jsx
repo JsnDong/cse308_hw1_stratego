@@ -47,6 +47,7 @@ export class games extends Component {
 						<div className="gamesRowList">
 							<h4 key={element.gameNumber}> Game ID : {element.gameNumber}</h4>
 							<h4> Result : {this.exchange(element.winLose)}</h4>
+							<h4>Game Time : {element.time}</h4>
 							<Link to="/replay" style={{ textDecoration: 'none' }}>
 								<button>Watch Replay</button>
 							</Link>

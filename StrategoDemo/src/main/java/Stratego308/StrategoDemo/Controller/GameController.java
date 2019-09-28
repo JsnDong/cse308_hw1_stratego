@@ -72,7 +72,12 @@ public class GameController {
         minutes = (int) (seconds / 60);
         seconds = seconds % 60;
 
-        String avgTime = minutes + ":" + seconds;
+        String avgTime = "";
+        if (seconds < 10) {
+            avgTime = minutes + ":0" + (int)seconds;
+        } else {
+            avgTime = minutes + ":" + seconds;
+        }
 
         String res = "{\"totalWin\":" + totalWin + ",\"totalLose\":" + totalLose + ",\"totalTie\":" + totalTie + ",\"averageTime\":" + avgTime + "}";
         JSONObject jsonObject = new JSONObject();
