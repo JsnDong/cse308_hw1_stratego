@@ -2,6 +2,7 @@ import React from 'react';
 import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
 import {Board} from "./Board.jsx"
 import {handleMove, isWon} from "../game/validation.js"
+import {AImove} from "../game/playerAI"
 import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
 
@@ -178,6 +179,8 @@ class Stratego extends React.Component {
                     let enemyColor = "RED";
                     if(piece[0] === "RED") { enemyColor = "BLUE"}
                     console.log("did you win?: " + isWon(this.state.board, enemyColor));
+                    const newBoard = AImove(this.state.board, enemyColor);
+                    this.setState({ board: newBoard});
                 } else
                     console.log("tile is not reachable")
             }
