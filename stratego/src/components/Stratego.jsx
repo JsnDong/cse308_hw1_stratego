@@ -18,7 +18,7 @@ class Stratego extends React.Component {
             turn: null,
             selected: null,
             highlighted: null,
-            duration: null 
+            duration: null
         }
         this.selectTile = this.selectTile.bind(this)
 
@@ -50,7 +50,7 @@ class Stratego extends React.Component {
                         tiles[row][col].push(Rank.BOMB)
                     else
                         tiles[row][col].push(blue_pieces.splice(Math.floor(Math.random() * blue_pieces.length), 1).pop())
-                    tiles[row][col].push(false)    
+                    tiles[row][col].push(false)
                 } else if (RED_ROWS.includes(row)) {
                     tiles[row][col] = [Color.RED]
                     if (row === RED_FLAG_ROW && col === red_flag_col)
@@ -61,7 +61,7 @@ class Stratego extends React.Component {
                         tiles[row][col].push(red_pieces.splice(Math.floor(Math.random() * red_pieces.length), 1).pop())
                     tiles[row][col].push(false)
                 } else {
-                    tiles[row][col] = null                    
+                    tiles[row][col] = null
                 }
             }
         }
@@ -177,10 +177,10 @@ class Stratego extends React.Component {
                     let piece_row = this.state.selected[ROW]
                     let piece_col = this.state.selected[COL]
                     let piece = new_board[piece_row][piece_col]
-    
+
                     new_board[piece_row][piece_col] = new_board[row][col]
                     new_board[row][col] = piece
-    
+
                     this.setState({
                         board: new_board,
                         selected: null
@@ -191,7 +191,7 @@ class Stratego extends React.Component {
             if (!this.state.selected) {
                 if (new_board[row][col] && new_board[row][col][COLOR] === this.state.turn) {
                     let new_highlighted = getHighlighted(new_board, this.state.turn, row, col);
-    
+
                     this.setState({
                         selected: new_highlighted.length? [row, col]: null,
                         highlighted: new_highlighted.length? new_highlighted: null
@@ -234,7 +234,7 @@ class Stratego extends React.Component {
 
                     this.setState({
                         board: new_board,
-                        turn: this.state.turn === Color.RED ? Color.BLUE : Color.RED, 
+                        turn: this.state.turn === Color.RED ? Color.BLUE : Color.RED,
                         selected: null,
                         highlighted: null,
                         moves: moves,
@@ -268,7 +268,7 @@ class Stratego extends React.Component {
                 <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
                 <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
                 <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
-                
+
                 {<Stopwatch duration={this.state.duration} />}
                 {this.state.mode}
                 {<Board mode= {this.state.mode}
@@ -288,7 +288,7 @@ class Stratego extends React.Component {
 
 const DIMENSION = 10;
 const BLUE_FLAG_ROW = 0
-const COLOR = 0;  
+const COLOR = 0;
 const ROW = 0;
 const RED_FLAG_ROW = 9;
 const RANK = 1;
@@ -341,7 +341,7 @@ const Rank = {
 
 // parameter flag_position  array representing position of flag
 // return array of arrays representing position of bombs
-// first 2-3 bombs surround flag and the rest are randomly placed    
+// first 2-3 bombs surround flag and the rest are randomly placed
 function getBombPositions(color, flag_col) {
     let bomb_positions = [];
 
@@ -360,7 +360,7 @@ function getBombPositions(color, flag_col) {
     while(bomb_positions.length < 6) {
         do {
             row = (color === Color.BLUE) ? (Math.floor((Math.random() * (BLUE_ROWS[BLUE_ROWS.length - 1] - BLUE_ROWS[0]) + 1) + BLUE_ROWS[0])):
-                                           (Math.floor((Math.random() * (RED_ROWS[RED_ROWS.length - 1] - RED_ROWS[0]) + 1) + RED_ROWS[0]))                              
+                                           (Math.floor((Math.random() * (RED_ROWS[RED_ROWS.length - 1] - RED_ROWS[0]) + 1) + RED_ROWS[0]))
             col = Math.floor(Math.random() * 10);
             bomb_position = [row, col]
         } while( isEqual([flag_row, flag_col], bomb_position) || matrix_includes(bomb_positions, bomb_position));

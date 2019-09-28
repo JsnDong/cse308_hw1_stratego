@@ -30,9 +30,10 @@ class login extends Component {
 			(res) => {
 				console.log(res);
 				localStorage.setItem('token', res.data);
-				//this.setState({ redirect: true});
+				this.setState({ redirect: true });
 			},
 			(err) => {
+				console.log('log');
 				this.setState({
 					errors: 'Invalid Username/Password Combination!'
 				});
@@ -40,9 +41,11 @@ class login extends Component {
 		);
 	};
 
-	render() {
+	componentWillMount() {
 		this.redirectIfAuthenticated();
+	}
 
+	render() {
 		if (this.state.redirect) {
 			return <Redirect exact to="/play" />;
 		} else {
@@ -87,11 +90,16 @@ class login extends Component {
 		if (!localStorage.hasOwnProperty('token')) {
 			return false;
 		}
-		axios.post('http://localhost:8080/token-auth', localStorage.getItem('token')).then((res) => {
-			if (res.data) {
-				this.setState({ redirect: true });
+		axios.post('http://localhost:8080/token-auth', localStorage.getItem('token')).then(
+			(res) => {
+				if (res.data) {
+					this.setState({ redirect: true });
+				}
+			},
+			(err) => {
+				console.log(err);
 			}
-		});
+		);
 	}
 }
 
