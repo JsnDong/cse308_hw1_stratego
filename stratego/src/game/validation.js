@@ -1,4 +1,4 @@
-import {DIMENSION, COLOR, RANK, ISVISABLE, Rank, getHighlighted}  from '../components/Stratego.jsx'
+import {DIMENSION, COLOR, RANK, ISVISABLE, Rank, Color, getHighlighted}  from '../components/Stratego.jsx'
 
 /**
  * Check if enemy's flag is gone or if enemy has no moving pieces left
@@ -11,15 +11,16 @@ function hasLost(color, scoreboard, board) {
     const color_index = color === Color.BLUE ? 1 : 2
 
     const hasFlag = scoreboard[Rank.properties[Rank.FLAG].power + 1][color_index]
-    if (!hasFlag)
+    if (!hasFlag) {
         return true
+    }
 
     let piece, piece_moves
     for (let row = 0; row < DIMENSION; row++) {
         for (let col = 0; col < DIMENSION; col++) {
             piece = board[row][col]
-            piece_moves = getHighlighted(board, color, row, col).length
-            if (piece && piece[COLOR] === color && piece_moves.length)
+            piece_moves = piece && piece[COLOR] === color ? getHighlighted(board, color, row, col) : []
+            if (piece_moves.length)
                 return false
         }
     }
