@@ -3,9 +3,11 @@ package Stratego308.StrategoDemo.Controller;
 import Stratego308.StrategoDemo.Entity.Game;
 import Stratego308.StrategoDemo.Repository.GameRespository;
 import org.apache.commons.lang3.SerializationUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,17 +42,46 @@ public class GameController {
         dbGame.setMoveList(moveListByte);
         dbGame.setStartList(startListByte);
 
+        System.out.println(startListByte);
+
         gameRespository.save(dbGame);
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping(path = "/getInfo/{username}")
+    //@GetMapping(path = "/getInfo/{username}")
+    @RequestMapping(path = "/getInfo/{username}", method = RequestMethod.GET, produces="application/json")
     @CrossOrigin(origins = "*")
-    public String getInfo(@PathVariable String username) {
+    public ResponseEntity getInfo(@PathVariable String username) throws JSONException {
         Long totalLose = gameRespository.countByUsernameAndWinLose(username, 0);
         Long totalWin = gameRespository.countByUsernameAndWinLose(username, 1);
-        String res = "{\"totalWin\":" + totalWin + ",\"totalLose\":" + totalLose + "}";
-        return res;
+        Long totalTie = gameRespository.countByUsernameAndWinLose(username, 2);
+        int minutes = 0;
+        double seconds = 0;
+
+        List<Game> gameList = gameRespository.findByUsername(username);
+        for (int i = 0; i < gameList.size(); i ++) {
+            Game g = gameList.get(i);
+            String time = g.getTime();
+            String[] timeList = time.split(":");
+
+            minutes = Integer.parseInt(timeList[0]) + minutes;
+            seconds = Integer.parseInt(timeList[1]) + seconds;
+        }
+
+        seconds = (seconds + (minutes * 60)) / gameList.size();
+        minutes = (int) (seconds / 60);
+        seconds = seconds % 60;
+
+        String avgTime = minutes + ":" + seconds;
+
+        String res = "{\"totalWin\":" + totalWin + ",\"totalLose\":" + totalLose + ",\"totalTie\":" + totalTie + ",\"averageTime\":" + avgTime + "}";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("totalWin", totalWin);
+        jsonObject.put("totalLose", totalLose);
+        jsonObject.put("totalTie", totalTie);
+        jsonObject.put("averageTime", avgTime);
+
+        return new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/getHistory/{username}")
@@ -66,12 +97,13 @@ public class GameController {
         return  res;
     }
 
-    @GetMapping(path = "/getGame/{id}")
+    @RequestMapping(path = "/getGame/{id}", method = RequestMethod.GET, produces="application/json")
     @CrossOrigin(origins = "*")
-    public Game getGame(@PathVariable int id) {
+    public Game getGame(@PathVariable int id) throws JSONException {
         Game res = gameRespository.findBygameNumber(id);
         res.setMoveListDe(SerializationUtils.deserialize(res.getMoveList()));
         res.setStartListDe(SerializationUtils.deserialize(res.getStartList()));
-        return  res;
+
+        return res;
     }
 }

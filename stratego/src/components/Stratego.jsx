@@ -6,19 +6,22 @@ import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
 import { Scoreboard } from './Scoreboard.jsx';
 import Stopwatch from './stopwatch.jsx';
+import axios from 'axios';
 
 class Stratego extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             mode: Mode.SETUP,
+            initialBoard: null,
             board: this.setup(),
             scoreboard: this.setScoreboard(),
             moves: null,
             turn: null,
             selected: null,
             highlighted: null,
-            duration: null
+            duration: null,
+            username: props.username
         }
         this.selectTile = this.selectTile.bind(this)
 
@@ -121,8 +124,18 @@ class Stratego extends React.Component {
     }
 
     handleStart() {
+
+        let deepTiles = matrix(DIMENSION);
+
+        for (let row = 0; row < DIMENSION; row ++) {
+            for (let col = 0; col < DIMENSION; col ++) {
+                deepTiles[row][col] = this.state.board[row][col]
+            }
+        }
+
         this.setState({
             mode: Mode.PLAY,
+            initialBoard: deepTiles,
             moves: [],
             turn: Color.RED,
             duration: 0,
@@ -135,12 +148,38 @@ class Stratego extends React.Component {
     handleGameOver(result) {
         this.stopStopwatch()
         this.setState({
-            mode: result,
+            mode: result,               //TODO: not setting
             selected: null,
             highlighted: null,
         });
 
-        /* TO DO: RECORD RESULT ON BACKEND */
+        let winLose;
+
+        if (result == Mode.LOST)
+            winLose = 0
+        else if (result == Mode.WON)
+            winLose = 1
+        else if (result == Mode.DRAW)
+            winLose = 2
+
+        const game = {
+            username: this.state.username,
+            winLose: winLose,
+            time: "12:00",
+            moveList: this.state.moves,
+            startList: this.state.initialBoard
+        };
+
+        axios.post('http://localhost:8080/createGame', game).then(
+            (res) => {
+                alert('Received Successful response from server!');
+                console.log(res);
+            },
+            (err) => {
+                alert('Server rejected response with: ' + err);
+            }
+        );
+
     }
 
     handleSurrender() {

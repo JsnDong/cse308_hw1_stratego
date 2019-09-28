@@ -1,9 +1,6 @@
 package Stratego308.StrategoDemo.Entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Game {
@@ -14,7 +11,9 @@ public class Game {
     private int winLose;                //0 = Lose, 1 = Win
     private String time;
     private String username;
+    @Column(length=100000)
     private byte[] moveList;
+    @Column(length=100000)
     private byte[] startList;
     private String moveListDe;
     private String startListDe;

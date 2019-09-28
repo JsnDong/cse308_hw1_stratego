@@ -58,7 +58,7 @@ class test extends Component {
 
 	getInfo = (e) => {
 		e.preventDefault();
-		const username = this.state.username;
+		const username = '1';
 		axios.get('http://localhost:8080/getInfo/' + username).then(
 			(res) => {
 				alert('Received Successful response from server!');
@@ -72,11 +72,11 @@ class test extends Component {
 
 	getHistory = (e) => {
 		e.preventDefault();
-		const username = this.state.username;
+		const username = '1';
 		axios.get('http://localhost:8080/getHistory/' + username).then(
 			(res) => {
 				alert('Received Successful response from server!');
-				console.log(res);
+				console.log(res.data);
 			},
 			(err) => {
 				alert('Server rejected response with: ' + err);
@@ -86,11 +86,11 @@ class test extends Component {
 
 	getGame = (e) => {
 		e.preventDefault();
-		const id = 18; // CHANGE ID
+		const id = 27; // CHANGE ID
 		axios.get('http://localhost:8080/getGame/' + id).then(
 			(res) => {
 				alert('Received Successful response from server!');
-				console.log(res);
+				console.log(JSON.parse(res.data.moveListDe));
 			},
 			(err) => {
 				alert('Server rejected response with: ' + err);
