@@ -24,6 +24,7 @@ class Stratego extends React.Component {
         this.handleStart = this.handleStart.bind(this)
         this.handleSurrender = this.handleSurrender.bind(this)
         this.handlePlayAgain = this.handlePlayAgain.bind(this)
+        this.handleAutoAttack = this.handleAutoAttack.bind(this)
     }
 
     setup() {
@@ -97,6 +98,13 @@ class Stratego extends React.Component {
             highlighted: null,
             board: this.setup()
         });
+    }
+    
+    handleAutoAttack() {
+        let newBoard = AImove(this.state.board, "RED");
+        this.setState({ board: newBoard});
+        newBoard = AImove(this.state.board, "BLUE");
+        this.setState({ board: newBoard});
     }
 
     selectTile(row, col) {
@@ -194,14 +202,14 @@ class Stratego extends React.Component {
         let start_disabled = this.state.mode !== Mode.SETUP
         let surrender_disabled = this.state.mode !== Mode.PLAY
         let playAgain_disabled = this.state.mode !== Mode.FINISH
-
+        let autoAttack_disabled = this.state.mode !== Mode.PLAY
         return (
             <div className="stratego">
                 <button onClick={this.handleShuffle} disabled={shuffle_disabled}>Shuffle</button>
                 <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
                 <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
                 <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
-
+                <button onClick={this.handleAutoAttack} disabled={autoAttack_disabled}> Auto Attack </button>
                 {<Board mode= {this.state.mode}
                         board={this.state.board}
                         selected = {this.state.selected}
