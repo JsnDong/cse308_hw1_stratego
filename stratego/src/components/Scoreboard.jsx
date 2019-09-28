@@ -10,17 +10,19 @@ class Scoreboard extends React.Component {
             table_row = []
             for (let col = 0; col < scoreboard[0].length; col++) {
                 if (!row) {
-                    table_row.push(<th>{scoreboard[row][col]}</th>)
+                    table_row.push(<th key={scoreboard[row][col]}>{scoreboard[row][col]}</th>)
                 } else {
-                    table_row.push(<td>{scoreboard[row][col]}</td>)
+                    table_row.push(<td key={scoreboard[0][col] + " " + scoreboard[row][0]}>{scoreboard[row][col]}</td>)
                 }
             }
-            table.push(<tr>{table_row}</tr>)
+            table.push(<tr key={scoreboard[row][0]}>{table_row}</tr>)
         }
 
         return (
             <table className="scoreboard">
-                {table}
+                <tbody>
+                    {table}
+                </tbody>
             </table>
         );
     }

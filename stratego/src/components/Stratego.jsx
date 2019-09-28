@@ -5,8 +5,7 @@ import {handleMove, hasLost} from "../game/validation.js"
 import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
 import { Scoreboard } from './Scoreboard.jsx';
-
-//import Scoreboard from "./Scoreboard.jsx"
+import Stopwatch from './stopwatch.jsx';
 
 class Stratego extends React.Component {
     constructor(props) {
@@ -15,15 +14,17 @@ class Stratego extends React.Component {
             mode: Mode.SETUP,
             board: this.setup(),
             scoreboard: this.setScoreboard(),
-            turn: Color.RED,
+            moves: null,
+            turn: null,
             selected: null,
             highlighted: null,
-            moves: []
+            duration: null 
         }
         this.selectTile = this.selectTile.bind(this)
 
         this.handleShuffle = this.handleShuffle.bind(this)
         this.handleStart = this.handleStart.bind(this)
+        this.handleSurrender = this.handleSurrender.bind(this)
         this.handlePlayAgain = this.handlePlayAgain.bind(this)
     }
 
@@ -97,6 +98,20 @@ class Stratego extends React.Component {
         })
     }
 
+    startStopwatch() {
+        const start_time = Date.now() - this.state.duration
+        const tick = () => {
+            this.setState({
+                duration: Date.now() - start_time
+            })
+        }
+        this.stopwatch = setInterval(tick);
+    }
+
+    stopStopwatch() {
+        clearInterval(this.stopwatch)
+    }
+
     handleShuffle() {
         this.setState({
             selected: null,
@@ -108,12 +123,17 @@ class Stratego extends React.Component {
     handleStart() {
         this.setState({
             mode: Mode.PLAY,
+            moves: [],
+            turn: Color.RED,
+            duration: 0,
             selected: null,
             highlighted: null,
         });
+        this.startStopwatch()
     }
 
     handleGameOver(result) {
+        this.stopStopwatch()
         this.setState({
             mode: result,
             selected: null,
@@ -123,13 +143,18 @@ class Stratego extends React.Component {
         /* TO DO: RECORD RESULT ON BACKEND */
     }
 
+    handleSurrender() {
+        this.handleGameOver(Mode.LOST)
+    }
+
     handlePlayAgain() {
         this.setState({
             mode: Mode.SETUP,
             selected: null,
             highlighted: null,
             board: this.setup(),
-            scoreboard: this.setScoreboard()
+            scoreboard: this.setScoreboard(),
+            duration: 0
         });
     }
 
@@ -180,6 +205,8 @@ class Stratego extends React.Component {
                     })
                 }
                 else if (matrix_includes(this.state.highlighted, [row, col])) {
+                    this.stopStopwatch()
+
                     const player = this.state.turn
                     const opponent = player === Color.BLUE ? Color.RED: Color.BLUE
                     const piece_row = this.state.selected[ROW]
@@ -201,6 +228,9 @@ class Stratego extends React.Component {
                         this.updateScoreboard(piece[COLOR], piece[RANK])
                         this.updateScoreboard(target_tile[COLOR], target_tile[RANK])
                     }
+
+                    if (player === Color.RED)
+                        this.startStopwatch()
 
                     this.setState({
                         board: new_board,
@@ -228,7 +258,9 @@ class Stratego extends React.Component {
         let shuffle_disabled = this.state.mode !== Mode.SETUP
         let start_disabled = this.state.mode !== Mode.SETUP
         let surrender_disabled = this.state.mode !== Mode.PLAY
-        let playAgain_disabled = this.state.mode !== Mode.FINISH
+        let playAgain_disabled = this.state.mode !== Mode.WON &&
+                                 this.state.mode !== Mode.LOST &&
+                                 this.state.mode !== Mode.DRAW
 
         return (
             <div className="stratego">
@@ -236,7 +268,9 @@ class Stratego extends React.Component {
                 <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
                 <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
                 <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
-
+                
+                {<Stopwatch duration={this.state.duration} />}
+                {this.state.mode}
                 {<Board mode= {this.state.mode}
                         board={this.state.board}
                         selected = {this.state.selected}
@@ -275,6 +309,7 @@ const Mode = {
     WON: "WON",
     LOST: "LOST",
     DRAW: "DRAW",
+    TEST: "TEST"
 }
 
 const Color = {
