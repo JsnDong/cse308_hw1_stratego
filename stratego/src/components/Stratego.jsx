@@ -7,6 +7,7 @@ import MoveHistory from "./MoveHistory.jsx";
 import { Scoreboard } from './Scoreboard.jsx';
 import Stopwatch from './stopwatch.jsx';
 import axios from 'axios';
+import { Redirect, Link } from 'react-router-dom';
 
 class Stratego extends React.Component {
     constructor(props) {
@@ -200,6 +201,10 @@ class Stratego extends React.Component {
         this.handleGameOver(Mode.LOST)
     }
 
+    handleLogOut() {
+        localStorage.removeItem('token');
+    }
+
     handlePlayAgain() {
         this.setState({
             mode: Mode.SETUP,
@@ -321,7 +326,12 @@ class Stratego extends React.Component {
                 <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
                 <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
                 <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
-
+                <Link to="/account" style={{ textDecoration: 'none' }}>
+                    <button>Profile</button>
+                </Link>
+                <Link to="/login" style={{ textDecoration: 'none' }}>
+                    <button onClick= {this.handleLogOut}>Sign out</button>
+                </Link>
                 {<Stopwatch duration={this.state.duration} />}
                 {this.state.mode}
                 {<Board mode= {this.state.mode}
