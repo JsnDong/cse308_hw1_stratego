@@ -2,13 +2,20 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 
 class account extends Component {
+	handleLogOut() {
+		localStorage.removeItem('token');
+	}
+
 	render() {
 		return (
 			<div className="info">
 				<h1>My Account Page</h1>
 				<div>
 					<Link to="/play" style={{ textDecoration: 'none' }}>
-						<button>Play Now!</button>
+						<button>Play!</button>
+					</Link>
+					<Link to="/login" style={{ textDecoration: 'none' }}>
+						<button onClick={this.handleLogOut}>Sign out</button>
 					</Link>
 					<ul>
 						<h3>Username: JamesAngeles</h3>
