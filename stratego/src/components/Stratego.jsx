@@ -1,11 +1,11 @@
 import React from 'react';
 import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
 import {Board} from "./Board.jsx"
-import {handleMove} from "../game/validation.js"
+import {handleMove, hasLost} from "../game/validation.js"
 import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
-
-//import Scoreboard from "./Scoreboard.jsx"
+import { Scoreboard } from './Scoreboard.jsx';
+import Stopwatch from './stopwatch.jsx';
 
 class Stratego extends React.Component {
     constructor(props) {
@@ -13,9 +13,12 @@ class Stratego extends React.Component {
         this.state = {
             mode: Mode.SETUP,
             board: this.setup(),
+            scoreboard: this.setScoreboard(),
+            moves: null,
+            turn: null,
             selected: null,
             highlighted: null,
-            moves: [],
+            duration: null 
         }
         this.selectTile = this.selectTile.bind(this)
 
@@ -36,6 +39,7 @@ class Stratego extends React.Component {
         let red_bomb_positions = getBombPositions(Color.RED, red_flag_col)
         let red_pieces = getPieces()
 
+        // Piece represnted as [Color, Rank, isVisible]
         for (let row = 0; row < DIMENSION; row++) {
             for (let col = 0; col < DIMENSION; col++) {
                 if (BLUE_ROWS.includes(row)) {
@@ -46,6 +50,7 @@ class Stratego extends React.Component {
                         tiles[row][col].push(Rank.BOMB)
                     else
                         tiles[row][col].push(blue_pieces.splice(Math.floor(Math.random() * blue_pieces.length), 1).pop())
+                    tiles[row][col].push(false)    
                 } else if (RED_ROWS.includes(row)) {
                     tiles[row][col] = [Color.RED]
                     if (row === RED_FLAG_ROW && col === red_flag_col)
@@ -54,13 +59,57 @@ class Stratego extends React.Component {
                         tiles[row][col].push(Rank.BOMB)
                     else
                         tiles[row][col].push(red_pieces.splice(Math.floor(Math.random() * red_pieces.length), 1).pop())
+                    tiles[row][col].push(false)
                 } else {
                     tiles[row][col] = null                    
                 }
             }
         }
-
         return tiles
+    }
+
+    setScoreboard() {
+        const ranks = Object.keys(Rank.properties)
+        const header = ["Pieces", "Blue", "Red"]
+
+        let scoreboard = [header]
+
+        let scoreboard_row
+        ranks.forEach(rank => {
+            scoreboard_row = []
+            scoreboard_row.push(rank)
+            scoreboard_row.push(Rank.properties[rank].quantity)
+            scoreboard_row.push(Rank.properties[rank].quantity)
+            scoreboard.push(scoreboard_row)
+        })
+
+        return scoreboard
+    }
+
+    updateScoreboard(color, rank) {
+        const color_index = color === Color.BLUE ? 1 : 2
+        const rank_index = Rank.properties[rank].power + 1
+
+        let scoreboard = this.state.scoreboard
+        scoreboard[rank_index][color_index] = scoreboard[rank_index][color_index] - 1
+
+        this.setState({
+            scoreboard: scoreboard
+        })
+    }
+
+    startStopwatch() {
+        const start_time = Date.now() - this.state.duration
+        const tick = () => {
+            this.setState({
+                duration: Date.now() - start_time
+            })
+        }
+        this.stopwatch = setInterval(tick);
+    }
+
+    stopStopwatch() {
+        clearInterval(this.stopwatch)
     }
 
     handleShuffle() {
@@ -74,19 +123,28 @@ class Stratego extends React.Component {
     handleStart() {
         this.setState({
             mode: Mode.PLAY,
+            moves: [],
+            turn: Color.RED,
+            duration: 0,
             selected: null,
             highlighted: null,
         });
+        this.startStopwatch()
+    }
+
+    handleGameOver(result) {
+        this.stopStopwatch()
+        this.setState({
+            mode: result,
+            selected: null,
+            highlighted: null,
+        });
+
+        /* TO DO: RECORD RESULT ON BACKEND */
     }
 
     handleSurrender() {
-        this.setState({
-            mode: Mode.FINISH,
-            selected: null,
-            highlighted: null,
-        });
-
-        /* TO DO: RECORD A LOSS FOR PLAYER ON SERVER */
+        this.handleGameOver(Mode.LOST)
     }
 
     handlePlayAgain() {
@@ -94,7 +152,9 @@ class Stratego extends React.Component {
             mode: Mode.SETUP,
             selected: null,
             highlighted: null,
-            board: this.setup()
+            board: this.setup(),
+            scoreboard: this.setScoreboard(),
+            duration: 0
         });
     }
 
@@ -104,22 +164,16 @@ class Stratego extends React.Component {
         if (this.state.mode === Mode.SETUP) {
             if (!this.state.selected) {
                 if (new_board[row][col] && new_board[row][col][COLOR] === Color.RED) {
-                    console.log("your piece selected")
-
                     this.setState({
                         selected: [row, col],
                     })
-                } else {
-                    console.log("no piece")
                 }
             } else {    // if a piece is already selected
                 if (row  === this.state.selected[ROW] && col === this.state.selected[COL]) { // and the user clicks on the selected piece again
-                    console.log("piece deselected")
                     this.setState({
                         selected: null
                     })
                 } else if (RED_ROWS.includes(row)) {
-                    console.log("swapped position")
                     let piece_row = this.state.selected[ROW]
                     let piece_col = this.state.selected[COL]
                     let piece = new_board[piece_row][piece_col]
@@ -133,60 +187,80 @@ class Stratego extends React.Component {
                     })
                 }
             }
-
         } else if (this.state.mode === Mode.PLAY) {
-            if (!this.state.selected && !this.state.highlighted) {
-                if (new_board[row][col]) {
-                    console.log("piece selected")
-                    let new_highlighted = getHighlighted(new_board, row, col);
+            if (!this.state.selected) {
+                if (new_board[row][col] && new_board[row][col][COLOR] === this.state.turn) {
+                    let new_highlighted = getHighlighted(new_board, this.state.turn, row, col);
     
                     this.setState({
                         selected: new_highlighted.length? [row, col]: null,
                         highlighted: new_highlighted.length? new_highlighted: null
                     })
-    
-                    if (!new_highlighted.length) console.log("piece can't move")
-                } else {
-                    console.log("no piece")
                 }
-            } else if (this.state.selected && this.state.highlighted) {
+            } else if (this.state.selected) {
                 if (row  === this.state.selected[ROW] && col === this.state.selected[COL]) {
-                    console.log("piece deselected")
                     this.setState({
                         selected: null,
                         highlighted: null
                     })
                 }
                 else if (matrix_includes(this.state.highlighted, [row, col])) {
-                    console.log("tile selected")
-                    let piece_row = this.state.selected[ROW]
-                    let piece_col = this.state.selected[COL]
-                    let piece = new_board[piece_row][piece_col]
+                    this.stopStopwatch()
 
-                    new_board = handleMove(this.state.board, piece_row, piece_col, row, col)
-                    const target_piece = new_board[row][col];
-                    const new_move = new Move(piece,[piece_row,piece_col],target_piece,[row,col]);
-                    const moves = [new_move, ...this.state.moves];
+                    const player = this.state.turn
+                    const opponent = player === Color.BLUE ? Color.RED: Color.BLUE
+                    const piece_row = this.state.selected[ROW]
+                    const piece_col = this.state.selected[COL]
+                    let board = this.state.board
+
+                    const piece = board[piece_row][piece_col]
+                    const target_tile = board[row][col]
+                    const move = new Move(piece, [piece_row, piece_col], target_tile, [row, col]);
+
+                    const {winner, loser} = handleMove(piece, target_tile)
+                    const moves = [move, ...this.state.moves];
+
+                    board[piece_row][piece_col] = null
+                    board[row][col] = winner
+                    if (winner && loser) {
+                        this.updateScoreboard(loser[COLOR], loser[RANK])
+                    } else if (!winner && !loser) {
+                        this.updateScoreboard(piece[COLOR], piece[RANK])
+                        this.updateScoreboard(target_tile[COLOR], target_tile[RANK])
+                    }
+
+                    if (player === Color.RED)
+                        this.startStopwatch()
 
                     this.setState({
                         board: new_board,
+                        turn: this.state.turn === Color.RED ? Color.BLUE : Color.RED, 
                         selected: null,
                         highlighted: null,
                         moves: moves,
                     })
-                } else
-                    console.log("tile is not reachable")
+
+                    const scoreboard = this.state.scoreboard
+                    board = this.state.board
+
+                    if (hasLost(player, scoreboard, board) && hasLost(opponent, scoreboard, board))
+                        this.handleGameOver(Mode.DRAW)
+                    else if (hasLost(player, scoreboard, board))
+                        this.handleGameOver(Mode.LOST)
+                    else if (hasLost(opponent, scoreboard, board))
+                        this.handleGameOver(Mode.WON)
+                }
             }
         }
-
-        
     }
 
     render() {
         let shuffle_disabled = this.state.mode !== Mode.SETUP
         let start_disabled = this.state.mode !== Mode.SETUP
         let surrender_disabled = this.state.mode !== Mode.PLAY
-        let playAgain_disabled = this.state.mode !== Mode.FINISH
+        let playAgain_disabled = this.state.mode !== Mode.WON &&
+                                 this.state.mode !== Mode.LOST &&
+                                 this.state.mode !== Mode.DRAW
 
         return (
             <div className="stratego">
@@ -194,14 +268,17 @@ class Stratego extends React.Component {
                 <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
                 <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
                 <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
-
+                
+                {<Stopwatch duration={this.state.duration} />}
+                {this.state.mode}
                 {<Board mode= {this.state.mode}
                         board={this.state.board}
                         selected = {this.state.selected}
                         highlighted = {this.state.highlighted}
                         selectTile={this.selectTile}
                         />}
-                {<MoveHistory moves={this.state.moves}/>}
+                {<Scoreboard scoreboard={this.state.scoreboard} />}
+                {<MoveHistory moves={this.state.moves} />}
             </div>
         );
     }
@@ -216,6 +293,7 @@ const ROW = 0;
 const RED_FLAG_ROW = 9;
 const RANK = 1;
 const COL = 1;
+const ISVISABLE = 2;
 const BLUE_ROWS = [0,1,2,3];
 const RED_ROWS = [6,7,8,9];
 const IMPASSABLES = [[4,2],[5,2],
@@ -228,7 +306,10 @@ const IMPASSABLES = [[4,2],[5,2],
 const Mode = {
     SETUP: "SETUP",
     PLAY: "PLAY",
-    FINISH: "FINISH"
+    WON: "WON",
+    LOST: "LOST",
+    DRAW: "DRAW",
+    TEST: "TEST"
 }
 
 const Color = {
@@ -302,16 +383,16 @@ function getPieces() {
     return pieces;
 }
 
-function getHighlighted(board, row, col) {
-    let highlighted = []
-    let rank = board[row][col][RANK]
+function getHighlighted(board, turn, row, col) {
+    const rank = board[row][col][RANK]
 
+    let highlighted = []
     if (rank !== Rank.FLAG && rank !== Rank.BOMB) {
         if (rank === Rank.SCOUT) {
             for (let highlighted_row = row - 1, i = true; highlighted_row > -1 && i; highlighted_row--) {
-                if ((board[highlighted_row][col] && board[highlighted_row][col][COLOR] === Color.RED) || matrix_includes(IMPASSABLES, [highlighted_row, col]))
+                if ((board[highlighted_row][col] && board[highlighted_row][col][COLOR] === turn) || matrix_includes(IMPASSABLES, [highlighted_row, col]))
                     i = false
-                else if (board[highlighted_row][col] && board[highlighted_row][col][COLOR] !== Color.RED) {
+                else if (board[highlighted_row][col] && board[highlighted_row][col][COLOR] !== turn) {
                     highlighted.push([highlighted_row, col])
                     i = false
                 }
@@ -319,9 +400,9 @@ function getHighlighted(board, row, col) {
                     highlighted.push([highlighted_row, col])
             }
             for (let highlighted_row = row + 1, i = true; highlighted_row < DIMENSION && i; highlighted_row++) {
-                if ((board[highlighted_row][col] && board[highlighted_row][col][COLOR] === Color.RED) || matrix_includes(IMPASSABLES, [highlighted_row, col]))
+                if ((board[highlighted_row][col] && board[highlighted_row][col][COLOR] === turn) || matrix_includes(IMPASSABLES, [highlighted_row, col]))
                     i = false
-                else if (board[highlighted_row][col] && board[highlighted_row][col][COLOR] !== Color.RED) {
+                else if (board[highlighted_row][col] && board[highlighted_row][col][COLOR] !== turn) {
                     highlighted.push([highlighted_row, col])
                     i = false
                 }
@@ -330,9 +411,9 @@ function getHighlighted(board, row, col) {
             }
 
             for (let highlighted_col = col - 1, i = true; highlighted_col > -1 && i; highlighted_col--) {
-                if ((board[row][highlighted_col] && board[row][highlighted_col][COLOR] === Color.RED) || matrix_includes(IMPASSABLES, [row, highlighted_col]))
+                if ((board[row][highlighted_col] && board[row][highlighted_col][COLOR] === turn) || matrix_includes(IMPASSABLES, [row, highlighted_col]))
                     i = false
-                else if (board[row][highlighted_col] && board[row][highlighted_col][COLOR] !== Color.RED) {
+                else if (board[row][highlighted_col] && board[row][highlighted_col][COLOR] !== turn) {
                     highlighted.push([row, highlighted_col])
                     i = false
                 }
@@ -340,9 +421,9 @@ function getHighlighted(board, row, col) {
                     highlighted.push([row, highlighted_col])
             }
             for (let highlighted_col = col + 1, i = true; highlighted_col < DIMENSION && i; highlighted_col++) {
-                if ((board[row][highlighted_col] && board[row][highlighted_col][COLOR] === Color.RED) || matrix_includes(IMPASSABLES, [row, highlighted_col]))
+                if ((board[row][highlighted_col] && board[row][highlighted_col][COLOR] === turn) || matrix_includes(IMPASSABLES, [row, highlighted_col]))
                     i = false
-                else if (board[row][highlighted_col] && board[row][highlighted_col][COLOR] !== Color.RED) {
+                else if (board[row][highlighted_col] && board[row][highlighted_col][COLOR] !== turn) {
                     highlighted.push([row, highlighted_col])
                     i = false
                 }
@@ -350,14 +431,13 @@ function getHighlighted(board, row, col) {
                     highlighted.push([row, highlighted_col])
             }
         } else {
-            console.log(row - 1 > -1 && (!board[row - 1][col] || board[row - 1][col][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row - 1, col]))
-            if (row - 1 > -1 && (!board[row - 1][col] || board[row - 1][col][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row - 1, col]))
+            if (row - 1 > -1 && (!board[row - 1][col] || board[row - 1][col][COLOR] !== turn) && !matrix_includes(IMPASSABLES, [row - 1, col]))
                 highlighted.push([row - 1, col])
-            if (row + 1 < DIMENSION && (!board[row + 1][col] || board[row + 1][col][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row + 1, col]))
+            if (row + 1 < DIMENSION && (!board[row + 1][col] || board[row + 1][col][COLOR] !== turn) && !matrix_includes(IMPASSABLES, [row + 1, col]))
                 highlighted.push([row + 1, col])
-            if (col - 1 > -1 && (!board[row][col - 1] || board[row][col - 1][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row, col - 1]))
+            if (col - 1 > -1 && (!board[row][col - 1] || board[row][col - 1][COLOR] !== turn) && !matrix_includes(IMPASSABLES, [row, col - 1]))
                 highlighted.push([row, col - 1])
-            if (col + 1 < DIMENSION && (!board[row][col + 1] || board[row][col + 1][COLOR] !== Color.RED) && !matrix_includes(IMPASSABLES, [row, col + 1]))
+            if (col + 1 < DIMENSION && (!board[row][col + 1] || board[row][col + 1][COLOR] !== turn) && !matrix_includes(IMPASSABLES, [row, col + 1]))
                 highlighted.push([row, col + 1])
         }
     }
@@ -365,5 +445,5 @@ function getHighlighted(board, row, col) {
     return highlighted
 }
 
-export {IMPASSABLES, COLOR, RANK, ROW, COL, Mode, Color, Rank};
+export {DIMENSION, IMPASSABLES, COLOR, RANK, ISVISABLE, ROW, COL, Mode, Color, Rank, getHighlighted};
 export default Stratego;
