@@ -8,10 +8,7 @@ class account extends Component {
 				<h1>My Account Page</h1>
 				<div>
 					<Link to="/play" style={{ textDecoration: 'none' }}>
-						<button>Play!</button>
-					</Link>
-					<Link to="/login" style={{ textDecoration: 'none' }}>
-						<button onClick={this.handleLogOut}>Sign out</button>
+						<button>Play Now!</button>
 					</Link>
 					<ul>
 						<h3>Username: JamesAngeles</h3>

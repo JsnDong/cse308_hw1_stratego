@@ -9,9 +9,9 @@ import Account from './components/account.jsx';
 import Stratego from './components/Stratego.jsx';
 import Replay from './components/Replay.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
+import NoMatch from './components/noMatch.jsx';
 
 import Test from './components/test.jsx';
-
 
 class App extends Component {
 	render() {
@@ -25,7 +25,8 @@ class App extends Component {
 						<Route exact path="/signup" component={SignUp} />
 						<PrivateRoute exact path="/account" component={Account} />
 						<Route exact path="/test" component={Test} />
-						<Route exact path="/replay" component={Replay}/>
+						<Route exact path="/replay" component={Replay} />
+						<Route component={NoMatch} />
 					</Switch>
 				</div>
 			</Router>
