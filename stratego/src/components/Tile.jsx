@@ -1,10 +1,9 @@
 import React from 'react';
 import '../stylesheets/tile.scss';
 
-import { matrix_includes } from '../LilacArray.js';
-
-import { COLOR, ROW, COL, IMPASSABLES, Color } from './Stratego.jsx';
-import { Piece } from './Piece.jsx';
+import {matrix_includes} from "../LilacArray.js"
+import Color from "../Color.js"
+import {Piece} from "./Piece.jsx"
 
 class Tile extends React.Component {
 	constructor(props) {
@@ -12,57 +11,51 @@ class Tile extends React.Component {
 		this.handleClick = this.handleClick.bind(this);
 	}
 
-	handleClick() {
-		const selectTile = this.props.selectTile;
-		const row = this.props.row;
-		const col = this.props.col;
-		selectTile(row, col);
-	}
+  handleClick() {
+    const tile = this.props.tile
+    const selectTile = this.props.selectTile 
+    selectTile(tile.getRow(), tile.getCol())
+  }
 
-	render() {
-		const mode = this.props.mode;
-		const board = this.props.board;
-		const selected = this.props.selected;
-		const highlighted = this.props.highlighted;
-		const row = this.props.row;
-		const col = this.props.col;
+  render() {
+    const board = this.props.board
+    const tile = this.props.tile
 
-		let hasPiece = board[row][col];
-		let color = hasPiece ? board[row][col][COLOR] : null;
-		let isVisable = hasPiece ? board[row][col][2] : null;
+    const piece = tile.getPiece()
+    const color = piece ? piece.getColor() : null
 
-		let isImpassable = matrix_includes(IMPASSABLES, [ row, col ]);
-		let isDanger = highlighted ? matrix_includes(highlighted, [ row, col ]) && hasPiece : false;
-		let isSelected = selected && row === selected[ROW] && col === selected[COL];
-		let isHighlighted = highlighted ? matrix_includes(highlighted, [ row, col ]) : false;
+    let reachable = board.getReachable() && board.getReachable().includes(tile)
+    let danger = reachable && piece && color !== board.getTurn()
+    let selected = board.getSelected() && board.getSelected().isEqual(tile)
+    
 
-		let tile_class = 'tile';
-		if (isImpassable) {
-			tile_class += ' impassable';
-		} else if (isDanger) {
-			tile_class += ' danger';
-		} else if (isSelected && color === Color.BLUE) {
-			tile_class += ' blue_selected';
-		} else if (isSelected && color === Color.RED) {
-			tile_class += ' red_selected';
-		} else if (isHighlighted) {
-			tile_class += ' highlighted';
-		} else if (color === Color.BLUE) {
-			tile_class += ' blue';
-		} else if (color === Color.RED) {
-			tile_class += ' red';
-		}
+    let tile_class = "tile"
+    if (tile.isImpassable()) {
+      tile_class += " impassable"
+    }  else if (danger) {
+      tile_class += " danger"
+    } else if (selected && color === Color.BLUE) {
+      tile_class += " blue_selected"
+    } else if (selected && color === Color.RED) {
+      tile_class += " red_selected"
+    } else if (reachable) {
+      tile_class += " highlighted"
+    } else if (color === Color.BLUE) {
+      tile_class += " blue"
+    } else if (color === Color.RED) {
+      tile_class += " red"
+    }
 
-		let piece = '';
-		if (hasPiece && (color === Color.RED || (color === Color.BLUE && isVisable)))
-			piece = <Piece mode={mode} board={board} row={row} col={col} />;
-
-		return (
-			<div className={tile_class} onClick={this.handleClick}>
-				{piece}
-			</div>
-		);
-	}
+    let piece_display = "";
+    if (piece && (color === Color.RED || (color === Color.BLUE && piece.isRevealed())))
+      piece_display = <Piece piece={piece} />
+  
+    return (
+      <div className={tile_class} onClick={this.handleClick} >
+        {piece_display}
+      </div>
+    );
+  }
 }
 
 export { Tile };

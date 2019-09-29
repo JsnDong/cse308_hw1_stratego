@@ -1,17 +1,18 @@
 import React from 'react';
 import '../stylesheets/piece.scss';
-
-import { RANK, Rank } from './Stratego.jsx';
+import Rank from "../Rank.js"
 
 class Piece extends React.Component {
-	render() {
-		const { board, row, col } = this.props;
+    render() {
+        const {piece} = this.props
+        const rank = piece.getRank()
 
-		const rank = board[row][col][RANK];
-		const symbol = Rank.properties[rank].symbol;
-
-		return <div className={'piece'}>{symbol}</div>;
-	}
+        return (
+            <div className={"piece"}>
+                {Rank.properties[rank].symbol}
+            </div>
+        );
+    }
 }
 
 export { Piece };
