@@ -188,7 +188,7 @@ class Stratego extends React.Component {
             startList: this.state.initialBoard
         };
 
-        axios.post('http://localhost:8080/createGame', game).then(
+        axios.post('http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/createGame', game).then(
             (res) => {
                 alert('Received Successful response from server!');
                 console.log(res);

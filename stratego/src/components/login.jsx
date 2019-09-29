@@ -26,7 +26,7 @@ class login extends Component {
 		};
 		e.preventDefault();
 
-		axios.post('http://localhost:8080/users', user).then(
+		axios.post('http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/users', user).then(
 			(res) => {
 				console.log(res);
 				localStorage.setItem('token', res.data);
@@ -90,16 +90,21 @@ class login extends Component {
 		if (!localStorage.hasOwnProperty('token')) {
 			return false;
 		}
-		axios.post('http://localhost:8080/token-auth', localStorage.getItem('token')).then(
-			(res) => {
-				if (res.data) {
-					this.setState({ redirect: true });
+		axios
+			.post(
+				'http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/token-auth',
+				localStorage.getItem('token')
+			)
+			.then(
+				(res) => {
+					if (res.data) {
+						this.setState({ redirect: true });
+					}
+				},
+				(err) => {
+					console.log(err);
 				}
-			},
-			(err) => {
-				console.log(err);
-			}
-		);
+			);
 	}
 }
 

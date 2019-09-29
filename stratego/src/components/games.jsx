@@ -16,7 +16,7 @@ export class games extends Component {
 	};
 
 	getGames = () => {
-		axios.get('http://localhost:8080/getHistory/' + this.state.username).then(
+		axios.get('http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/getHistory/' + this.state.username).then(
 			(res) => {
 				console.log(res);
 				this.setState({
