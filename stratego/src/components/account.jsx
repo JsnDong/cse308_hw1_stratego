@@ -74,6 +74,9 @@ class account extends Component {
 							<h3> 70% (35/50)</h3>
 							<Line style={{width: 250, paddingTop: 20}}percent={Math.floor((winRatio[0].value/total)*100)} strokeWidth="4" strokeColor='#7566BD' />
 						</div>
+						<div className="space" >
+
+						</div>
 						<div className="gameTimeBox">
 							<h1> Average Game Time </h1>
 							<h3> 25:00 </h3>

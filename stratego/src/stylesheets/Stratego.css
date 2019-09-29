@@ -1,11 +1,120 @@
-.stratego {
-	/* TO DO */
-}
-
 .board {
 	/* TO DO */
 }
 
 .board_row {
 	/* TO DO */
+}
+.links {
+    padding-right: 1vh;
+    padding-left: 1vh;
+    font-weight: lighter;
+    color: white;
+}
+
+.pipe{
+    color: white;
+    font-weight: lighter;
+}
+
+.header {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    height: 40px;
+	width: 100%;
+	align-self: flex-end;
+	justify-self: flex-end;
+    padding-top: 2vh;
+    padding-left: 2vh;
+    overflow: auto;
+}
+.header-btn {
+	flex: 1;
+    display: flex;
+	justify-content: center;
+	flex-direction: row;
+    height: 4%;
+	width: 100%;
+    padding-left: 2vh;
+    overflow: auto;
+}
+.stratego {
+    background: url(gameBackGround.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    width: 100%;
+    height: 170vh;
+    overflow: hidden;
+}
+
+.column {
+    display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	min-width: 25%;
+}
+.row {
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-evenly;
+	overflow: auto;
+}
+
+.scoreboard {
+    box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
+    background-color: rgb(243, 243, 243);
+	border-radius: 6px;
+	padding: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    justify-self: center;
+    align-self: center;
+    align-content: center;
+    flex-direction: column;
+	width: 100%;
+	/* height: 70vh;
+    width: 45vh; */
+}
+.subColumn {
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    justify-self: flex-start;
+    align-self: flex-start;
+    align-content: center;
+    flex-direction: column;
+	width: 100%;
+	/* height: 70vh;
+    width: 45vh; */
+}
+
+.feed {
+	box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
+    background-color: rgb(243, 243, 243);
+	border-radius: 6px;
+	padding-top: 6px;
+	width: 100%;
+}
+
+.boardCard {
+    box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
+    background-color: linen;
+	border-radius: 6px;
+	padding: 6px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 40%;
+	height: 40%;
+}
+.mode {
+	height: 10vh;
+	font-weight: lighter;
 }

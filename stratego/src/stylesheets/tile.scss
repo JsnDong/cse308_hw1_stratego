@@ -7,13 +7,17 @@
 	border: 1px solid black;
 	height: 50px;
 	width: 50px;
+	border-radius: 5px;
+	padding: 5px;
+	border-color: linen;
+
 }
 .blue {
-	background-color: royalblue;
+	background-color: 	#388CBF // royalblue;
 }
 
 .red {
-	background-color: firebrick;
+	background-color: #8575C0 //firebrick;
 }
 
 .hidden {

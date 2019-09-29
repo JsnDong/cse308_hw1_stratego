@@ -322,26 +322,58 @@ class Stratego extends React.Component {
 
         return (
             <div className="stratego">
-                <button onClick={this.handleShuffle} disabled={shuffle_disabled}>Shuffle</button>
-                <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
-                <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
-                <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
-                <Link to="/account" style={{ textDecoration: 'none' }}>
-                    <button>Profile</button>
-                </Link>
-                <Link to="/login" style={{ textDecoration: 'none' }}>
-                    <button onClick= {this.handleLogOut}>Sign out</button>
-                </Link>
-                {<Stopwatch duration={this.state.duration} />}
-                {this.state.mode}
-                {<Board mode= {this.state.mode}
+                <div className="header">
+                    <Link to="/account" className="links">
+                        Profile
+                    </Link>
+                    <h5 className="pipe">|</h5>
+					<Link to="/login" className="links" onClick={this.handleLogOut}>
+						Sign Out
+					</Link>
+                </div>
+                <div className="row">
+                <div className="column">
+                    <div className="links">
+                    {<Stopwatch duration={this.state.duration} />}
+                    </div>
+                    
+                    {<Scoreboard scoreboard={this.state.scoreboard} className="scoreboard" />}
+                </div>
+                <div className="boardCard">
+                {<Board
+                        mode= {this.state.mode}
                         board={this.state.board}
                         selected = {this.state.selected}
                         highlighted = {this.state.highlighted}
                         selectTile={this.selectTile}
                         />}
-                {<Scoreboard scoreboard={this.state.scoreboard} />}
-                {<MoveHistory moves={this.state.moves} />}
+                </div>
+                <div className="column">
+                <div className="subColumn">
+                <div className="header-btn">
+                    <Link className="links" onClick={this.handleShuffle} disabled={shuffle_disabled}>
+                        Shuffle
+                    </Link>
+                    <h5 className="pipe">|</h5>
+                    <Link  className="links" onClick={this.handleStart} disabled={start_disabled}>
+                        Start
+                    </Link>
+                    <h5 className="pipe">|</h5>
+                    <Link  className="links" onClick={this.handleSurrender} disabled={surrender_disabled}>
+                        Surrender
+                    </Link>
+                    <h5 className="pipe">|</h5>
+                    <Link  className="links" onClick={this.handlePlayAgain} disabled={playAgain_disabled}>
+                        Play Again
+                    </Link>
+                </div>
+                <div className="feed">
+                    {<MoveHistory moves={this.state.moves} />}
+                </div> 
+                    </div>
+                </div>
+                </div>
+                
             </div>
         );
     }
