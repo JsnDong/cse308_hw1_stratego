@@ -1,3 +1,17 @@
+
+.info {
+    background: 'green';
+    color: 'green';
+    background: url(gameBackGround.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    width: 218.5vh;
+    height: 170vh;
+    overflow: hidden;
+}
+
 .header {
     flex: 1;
     display: flex;
@@ -5,6 +19,8 @@
     flex-direction: row;
     height: 50px;
     width: 100%;
+    padding-top: 2vh;
+    overflow: auto;
 }
 
 .title { 
@@ -15,15 +31,18 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: auto;
 }
 .row {
     display: flex;
     flex-direction: row; 
     justify-content: space-evenly;
     padding-top: 5vh;
+    overflow: auto;
 }
 .pieChartBox {
     box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+    background-color: rgb(243, 243, 243);
 	border-radius: 6px;
     padding: 15vh;
     display: flex;
@@ -39,9 +58,11 @@
 
 .gameTimeBox {
     box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+    background-color: rgb(243, 243, 243);
 	border-radius: 6px;
-    padding: 15vh;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
     height: 35vh;
     width: 85vh;
@@ -49,10 +70,25 @@
 
 .winRateBox {
     box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
-	border-radius: 6px;
-    padding: 15vh;
+    background-color: rgb(243, 243, 243);
+    border-radius: 6px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
     height: 35vh;
     width: 85vh;
+}
+.links {
+    padding-right: 1vh;
+    padding-left: 1vh;
+    font-weight: bold;
+    color: black;
+}
+
+.greeting {
+    padding-right: 1vh;
+    font-weight: bold;
+    color: black;
 }

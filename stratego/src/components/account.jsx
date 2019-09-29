@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import PieChart from 'react-minimal-pie-chart';
 import '../stylesheets/accountStyle.css';
+import Background from '../stylesheets/gameBackGround.jpg';
+import { Line } from 'rc-progress';
 
 class account extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			data : [false, false, false, false]
+			data : [true, false, false, false],
+			username : 'James'
 		};
 	}
 	handleLogOut() {
@@ -24,24 +27,33 @@ class account extends Component {
 
 	render() {
 		const winRatio = [
-			{ title: 'Wins', value: 35, color: '#0d8a9c' },
-			{ title: 'Lossess', value: 15, color: '#f64f4f' },
-			{ title: 'Surrenders', value: 2, color: '#18b5cc' },
-			{ title: 'Draws', value: 1, color: '#878787' },
+			{ label: '', title: 'Wins', value: 35, color: '#5C61B1' },
+			{ label: '', title: 'Losses', value: 15, color: '	#4098CD' },
+			{ title: 'Surrenders', value: 5, color: '#989FB3' },
+			{ title: 'Draws', value: 5, color: '#B385C8' },
 		];
+		let total = 0;
+		Array.from(winRatio).forEach((data, i) => {
+			total += data.value;
+		});
 
 		return (
-			<div className="info">
+			<div className="info" >
 				<div className="header">
-					<h1 classname="title">Hi, JamesAngeles! </h1>
-					<Link to="/play">
-						<h1>Play!</h1>
+					<div className="greeting">
+						Hi, {this.state.username}
+					</div>
+					<h5>|</h5>
+					<Link to="/play" className="links">
+						Play!
 					</Link>
-					<Link to="/games" >
-						<h1>Past Games</h1>
+					<h5>|</h5>
+					<Link to="/games" className="links">
+						Game History
 					</Link>
-					<Link to="/login">
-						<button onClick={this.handleLogOut}>Sign out</button>
+					<h5>|</h5>
+					<Link to="/login" className="links" onClick={this.handleLogOut}>
+						Sign Out
 					</Link>
 				</div>
 				<div className="row">
@@ -53,17 +65,20 @@ class account extends Component {
 						style={{width: 200, height: 200}}
 						data={winRatio}
 						/>
-					{ this.state.data[0] ? <h1>{ winRatio[0].title + ': ' + winRatio[0].value + '%'}</h1> : null }
-					{ this.state.data[1] ? <h1>{ winRatio[1].title + ': ' + winRatio[1].value + '%'}</h1> : null }
-					{ this.state.data[2] ? <h1>{ winRatio[2].title + ': ' + winRatio[2].value + '%'}</h1> : null }
-					{ this.state.data[3] ? <h1>{ winRatio[3].title + ': ' + winRatio[3].value + '%'}</h1> : null }
+					{ this.state.data[0] ? <h1>{ winRatio[0].title + ': ' + Math.round(((winRatio[0].value)/total)*100) + '%' + ' (' + (winRatio[0].value) + '/' + total + ')'}</h1> : null }
+					{ this.state.data[1] ? <h1>{ winRatio[1].title + ': ' + Math.round(((winRatio[1].value)/total)*100) + '%' + ' (' + (winRatio[1].value) + '/' + total + ')'}</h1> : null }
+					{ this.state.data[2] ? <h1>{ winRatio[2].title + ': ' + Math.round(((winRatio[2].value)/total)*100) + '%' + ' (' + (winRatio[2].value) + '/' + total + ')'}</h1> : null }
+					{ this.state.data[3] ? <h1>{ winRatio[3].title + ': ' + Math.round(((winRatio[3].value)/total)*100) + '%' + ' (' + (winRatio[3].value) + '/' + total + ')'}</h1> : null }
 					</div>
 					<div className="column">
 						<div className="winRateBox">
-							<h3> Win Rate: 70% (35/50) </h3>
+							<h1> Win Rate </h1>
+							<h3> 70% (35/50)</h3>
+							<Line style={{width: 250, paddingTop: 20}}percent={Math.floor((winRatio[0].value/total)*100)} strokeWidth="4" strokeColor='lightblue' />
 						</div>
 						<div className="gameTimeBox">
-							<h2> Average Game Time: 25:00 </h2>
+							<h1> Average Game Time </h1>
+							<h3> 25:00 </h3>
 						</div>
 					</div>
 
