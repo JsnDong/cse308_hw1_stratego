@@ -10,7 +10,7 @@ class account extends Component {
 				<div>
 					<ul>
 						<h3>Username: JamesAngeles</h3>
-						<Link to="/games" style={{ textDecoration: 'none' }}>
+						<Link to="/history" style={{ textDecoration: 'none' }}>
 							<li>Past Games</li>
 						</Link>
 						<li> Win Rate: 70% (35/50)</li>

@@ -25,7 +25,7 @@ class App extends Component {
 						<Route exact path="/signup" component={SignUp} />
 						<PrivateRoute exact path="/account" component={Account} />
 						<Route exact path="/test" component={Test} />
-						<Route exact path="/replay" component={Replay}/>
+						<Route exact path="/replay/:id" component={Replay}/>
 					</Switch>
 				</div>
 			</Router>

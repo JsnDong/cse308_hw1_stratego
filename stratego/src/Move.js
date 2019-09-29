@@ -5,23 +5,22 @@ class Move {
 	constructor(startPiece,startTile,targetPiece,targetTile) {
 		const [startRow, startCol] = startTile;
 		const [endRow, endCol] = targetTile;
-		const [startColor,startRank] = startPiece;
-		const startPower = Rank.properties[startRank].power;
 
 		this.startRow = startRow;
 		this.startCol = startCol;
 		this.endRow = endRow;
 		this.endCol = endCol;
-		this.startColor = startColor;
-		this.startRank = startRank;
-		this.startPower = startPower;
+		this.startPiece = startPiece;
 		this.targetPiece = targetPiece;
 	}
 
 	toString() {
 		// obstruct rank for AI move
-		const rank = this.startColor == "RED" ? this.startRank : "Piece";
-		const startMessage = rank + " (" + this.startColor[0] + ") at (" + this.startRow + "," + this.startCol + ") ";
+		const [startColor,startRank] = this.startPiece;
+		const startPower = Rank.properties[startRank].power;
+
+		const rank = startColor == "RED" ? startRank : "Piece";
+		const startMessage = rank + " (" + startColor[0] + ") at (" + this.startRow + "," + this.startCol + ") ";
 
 		if (this.targetPiece === null) {
 			return startMessage + this.constructMoveMessage();
@@ -53,11 +52,14 @@ class Move {
 	}
 
 	constructBothCaptureMessage() {
+		const [startColor,startRank] = this.startPiece;
+		const startPower = Rank.properties[startRank].power;
 		const [endColor, endRank] = this.targetPiece;
 		const endPower = Rank.properties[endRank].power;
-		const startPiece = this.startRank + " (" + this.startColor[0] + ")";
+
+		const startPieceString = startRank + " (" + startColor[0] + ")";
 		const endPiece = endRank + " (" + endColor[0] + ") ";
-		return "Both " + startPiece + " and " + endPiece + "got captured at (" + this.endRow + "," + this.endCol + ")!";
+		return "Both " + startPieceString + " and " + endPiece + "got captured at (" + this.endRow + "," + this.endCol + ")!";
 	}
 }
 

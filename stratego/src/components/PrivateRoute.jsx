@@ -34,7 +34,9 @@ class PrivateRoute extends React.Component {
 
 	authenticate() {
 		if (!localStorage.hasOwnProperty('token')) {
-			return false;
+			this.setState({
+				loading: false,
+			});
 		}
 		axios.post('http://localhost:8080/token-auth', localStorage.getItem('token')).then(
 			(res) => {

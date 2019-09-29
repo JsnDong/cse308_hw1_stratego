@@ -99,11 +99,13 @@ public class GameController {
 
     @RequestMapping(path = "/getGame/{id}", method = RequestMethod.GET, produces="application/json")
     @CrossOrigin(origins = "*")
-    public Game getGame(@PathVariable int id) throws JSONException {
+    public ResponseEntity getGame(@PathVariable int id) throws JSONException {
         Game res = gameRespository.findBygameNumber(id);
+        if (res == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         res.setMoveListDe(SerializationUtils.deserialize(res.getMoveList()));
         res.setStartListDe(SerializationUtils.deserialize(res.getStartList()));
-
-        return res;
+        return ResponseEntity.ok(res);
     }
 }

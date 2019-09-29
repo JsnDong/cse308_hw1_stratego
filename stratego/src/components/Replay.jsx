@@ -5,67 +5,61 @@ import {handleMove} from "../game/validation.js"
 import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
+import ReplayBoard from './ReplayBoard.jsx';
 
 
 class Replay extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			board: props.board,
-			movePtr: 0, 
+			loading: true,
+			errors: null,
+			board: null,
+			moves: [],
 		}
+		this.getGameInfo();
 	}
 
 	render() {
-		return (
-			<div className="stratego">
-                <FontAwesomeIcon icon="forward"><button onClick={this.makeMove} disabled={this.canMakeMove()}></button></FontAwesomeIcon>
-                <button onClick={this.rewindMove} disabled={this.canRewindMove()}></button>
-                <button onClick={this.handleReplay}></button>
+		if (this.state.loading) {
+			return null;
+		}
 
-                {<Board mode= {this.state.mode}
-                        board={this.state.board}
-                        selected = {this.state.selected}
-                        highlighted = {this.state.highlighted}
-                        selectTile={this.selectTile}
-                        />}
-                {<MoveHistory moves={this.state.moves}/>}
-            </div>
-		)
+		if (this.state.errors) {
+			return ( 
+				<div> <h1> Game does not exist! </h1> </div>
+			);
+		}
+
+		return <ReplayBoard board={this.state.board} moves={this.state.moves}/>;
 	}
 
-	canMakeMove() {
-		return this.state.movePtr != this.state.moves.length;
-	}
+	getGameInfo() {
+		const {id} = this.props.match.params;
 
-	canRewindMove() {
-		return this.state.movePtr != 0;
-	}
-
-	makeMove() {
-		const {movePtr, board} = this.state;
-		const [startMove, endMove] = this.props.moves[movePtr];
-		const [startRow, startCol] = startMove;
-		const [endRow, endCol] = endMove;
-
-		const updatedBoard = handleMove(board, startRow, startCol, endRow, endCol);
-		this.setState({
-			board: updatedBoard,
-			movePtr: movePtr + 1
-		});
-	}
-
-	rewindMove() {
-		const {movePtr, board} = this.state;
-		const [startMove, endMove] = this.props.moves[movePtr - 1];
-		const [startRow, startCol] = startMove;
-		const [endRow, endCol] = endMove;
-
-		const updatedBoard = handleMove(board, endRow, endCol, startRow, startCol);
-		this.setState({
-			board: updatedBoard,
-			movePtr: movePtr - 1
-		});
+		axios.get('http://localhost:8080/getGame/' + id).then(
+			(res) => {
+				console.log(res);
+				const {moveListDe, startListDe} = res.data;
+				const initialBoard = JSON.parse(startListDe);
+				const moves = JSON.parse(moveListDe);
+				console.log(initialBoard);
+				console.log(moves);
+				this.setState({
+					loading: false,
+					board: initialBoard,
+					moves: moves,
+				});
+			},
+			(err) => {
+				alert(err);
+				this.setState({
+					loading: false,
+					errors: err,
+				});
+			}
+		);
 	}
 }
 
