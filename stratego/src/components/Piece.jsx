@@ -1,18 +1,16 @@
 import React from 'react';
 import "../stylesheets/Stratego.css"
 
-import {RANK, Rank} from "./Stratego.jsx"
+import Rank from "../Rank.js"
 
 class Piece extends React.Component {
     render() {
-        const {board, row, col} = this.props
-
-        const rank = board[row][col][RANK]
-        const  symbol = Rank.properties[rank].symbol
+        const {piece} = this.props
+        const rank = piece.getRank()
 
         return (
             <div className={"piece"}>
-                {symbol}
+                {Rank.properties[rank].symbol}
             </div>
         );
     }

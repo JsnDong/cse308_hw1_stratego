@@ -9,15 +9,18 @@ class Move {
 	toString() {
 		const [startRow, startCol] = this.startTile;
 		const [endRow, endCol] = this.targetTile;
-		const [startColor,startRank] = this.startPiece;
-		// hide rank of AI 
-		const rank = startColor == "RED" ? startRank : "Piece";
+		const selected_piece = this.startPiece;
+		
+		const color = selected_piece.getColor();
+		const rank = color == "RED" ? selected_piece.getRank() : "Piece";	// hide rank of AI
 
-		const startMessage = rank + " (" + startColor[0] + ") at (" + startRow + "," + startCol + ") ";
+		const startMessage = rank + " (" + color[0] + ") at (" + startRow + "," + startCol + ") ";
 		let actionMessage = " moved to (" + endRow + "," + endCol + ")";
-		if (this.targetPiece !== null) {
-			const [endColor,endRank] = this.targetPiece;
-			actionMessage = "captured " + endRank + "(" + endColor[0] + ") at (" + endRow + "," + endCol + ")";
+		if (this.targetPiece.getPiece()) {
+			console.log(this.targetPiece.getPiece().getColor())
+			const target_color = this.targetPiece.getPiece().getColor()
+			const target_rank = this.targetPiece.getPiece().getRank()
+			actionMessage = "captured " + target_rank + "(" + target_color[0] + ") at (" + endRow + "," + endCol + ")";
 		}
 
 		return startMessage + actionMessage;

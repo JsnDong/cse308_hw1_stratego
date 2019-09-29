@@ -2,8 +2,9 @@ import React from 'react';
 import '../stylesheets/Stratego.css';
 
 import {matrix_includes} from "../LilacArray.js"
+import Color from "../Color.js"
 
-import {COLOR, ROW, COL, IMPASSABLES, Color} from "./Stratego.jsx"
+import {ROW, COL} from "./Stratego.jsx"
 import {Piece} from "./Piece.jsx"
 
 class Tile extends React.Component {
@@ -13,39 +14,33 @@ class Tile extends React.Component {
   }
 
   handleClick() {
-    const selectTile = this.props.selectTile
-    const row = this.props.row
-    const col = this.props.col
-    selectTile(row, col)
+    const tile = this.props.tile
+    const selectTile = this.props.selectTile 
+    selectTile(tile.getRow(), tile.getCol())
   }
 
   render() {
-    const mode = this.props.mode
     const board = this.props.board
-    const selected = this.props.selected
-    const highlighted = this.props.highlighted
-    const row = this.props.row
-    const col = this.props.col
+    const tile = this.props.tile
 
-    let hasPiece = board[row][col]
-    let color = hasPiece? board[row][col][COLOR]: null
-    let isVisable = hasPiece? board[row][col][2]: null
+    const piece = tile.getPiece()
+    const color = piece ? piece.getColor() : null
 
-    let isImpassable = matrix_includes(IMPASSABLES, [row, col])
-    let isDanger = highlighted? matrix_includes(highlighted, [row, col]) && hasPiece: false
-    let isSelected = selected && row === selected[ROW] && col === selected[COL]
-    let isHighlighted = highlighted? matrix_includes(highlighted, [row, col]): false
+    let reachable = board.getReachable() && board.getReachable().includes(tile)
+    let danger = reachable && piece && color !== board.getTurn()
+    let selected = board.getSelected() && board.getSelected().isEqual(tile)
     
+
     let tile_class = "tile"
-    if (isImpassable) {
+    if (tile.isImpassable()) {
       tile_class += " impassable"
-    }  else if (isDanger) {
+    }  else if (danger) {
       tile_class += " danger"
-    } else if (isSelected && color === Color.BLUE) {
+    } else if (selected && color === Color.BLUE) {
       tile_class += " blue_selected"
-    } else if (isSelected && color === Color.RED) {
+    } else if (selected && color === Color.RED) {
       tile_class += " red_selected"
-    } else if (isHighlighted) {
+    } else if (reachable) {
       tile_class += " highlighted"
     } else if (color === Color.BLUE) {
       tile_class += " blue"
@@ -53,16 +48,13 @@ class Tile extends React.Component {
       tile_class += " red"
     }
 
-    let piece = "";
-    if (hasPiece && (color === Color.RED || (color === Color.BLUE && isVisable)))
-      piece = <Piece mode={mode}
-                     board={board}
-                     row={row}
-                     col={col} />
+    let piece_display = "";
+    if (piece /*&& (color === Color.RED || (color === Color.BLUE && piece.isRevealed()))*/)
+      piece_display = <Piece piece={piece} />
   
     return (
       <div className={tile_class} onClick={this.handleClick} >
-        {piece}
+        {piece_display}
       </div>
     );
   }

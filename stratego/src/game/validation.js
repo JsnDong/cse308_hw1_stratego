@@ -1,4 +1,4 @@
-import {DIMENSION, COLOR, RANK, ISVISABLE, Rank, Color, getHighlighted}  from '../components/Stratego.jsx'
+import Rank from "../Rank.js"
 
 /**
  * Check if enemy's flag is gone or if enemy has no moving pieces left
@@ -7,6 +7,7 @@ import {DIMENSION, COLOR, RANK, ISVISABLE, Rank, Color, getHighlighted}  from '.
  * @param {*} endy 
  */
 
+ /*
 function hasLost(color, scoreboard, board) {
     const color_index = color === Color.BLUE ? 1 : 2
 
@@ -27,6 +28,7 @@ function hasLost(color, scoreboard, board) {
 
     return true
 };
+*/
 
 /**
  * Returns updated board. Checks which piece should win and kills other
@@ -39,14 +41,14 @@ function hasLost(color, scoreboard, board) {
  */
 export const handleMove = (piece, target_tile) => {
     let result = {}
-    if (!target_tile) {
+    if (!target_tile.getPiece()) {
         result.winner = piece
-        result.loser = target_tile
+        result.loser = null
         return result
     }
         
-    const piece_power = Rank.properties[piece[RANK]].power;
-    const target_power = Rank.properties[target_tile[RANK]].power;
+    const piece_power = Rank.properties[piece.getRank()].power;
+    const target_power = Rank.properties[target_tile.getPiece().getRank()].power;
 
     if (piece_power === target_power) {
         result.winner = null
@@ -56,15 +58,13 @@ export const handleMove = (piece, target_tile) => {
         (piece_power === 3 && target_power === 11) ||
         (piece_power === 1 && target_power === 10)) {
             result.winner = piece
-            result.loser = target_tile
+            result.loser = target_tile.getPiece()
     } else {
-        result.winner = target_tile
+        result.winner = target_tile.getPiece()
         result.loser = piece
     }
         
-    result.winner[ISVISABLE] = true
+    result.winner.reveal()
 
     return result
 };
-
-export {hasLost}

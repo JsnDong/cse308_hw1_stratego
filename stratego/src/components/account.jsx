@@ -25,7 +25,7 @@ class account extends Component {
 	}
 
 	isAuthenticated() {
-		return false;
+		return true;
 	}
 }
 export default account;
