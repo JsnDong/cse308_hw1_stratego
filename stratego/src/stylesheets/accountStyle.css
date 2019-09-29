@@ -42,7 +42,7 @@
     overflow: auto;
 }
 .pieChartBox {
-    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+    box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
     background-color: rgb(243, 243, 243);
 	border-radius: 6px;
     padding: 15vh;
@@ -58,7 +58,7 @@
 }
 
 .gameTimeBox {
-    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+    box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
     background-color: rgb(243, 243, 243);
 	border-radius: 6px;
     display: flex;
@@ -70,7 +70,7 @@
 }
 
 .winRateBox {
-    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+    box-shadow: 10px 10px 20px 10px rgba(21, 0, 46, 0.2);
     background-color: rgb(243, 243, 243);
     border-radius: 6px;
     display: flex;
