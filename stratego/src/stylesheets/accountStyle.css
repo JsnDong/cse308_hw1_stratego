@@ -1,0 +1,58 @@
+.header {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    height: 50px;
+    width: 100%;
+}
+
+.title { 
+    font-size: 10px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.row {
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-evenly;
+    padding-top: 5vh;
+}
+.pieChartBox {
+    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+	border-radius: 6px;
+    padding: 15vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    justify-self: center;
+    align-self: center;
+    align-content: center;
+    flex-direction: column;
+    height: 80vh;
+    width: 95vh;
+}
+
+.gameTimeBox {
+    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+	border-radius: 6px;
+    padding: 15vh;
+    display: flex;
+    align-items: center;
+    height: 35vh;
+    width: 85vh;
+}
+
+.winRateBox {
+    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+	border-radius: 6px;
+    padding: 15vh;
+    display: flex;
+    align-items: center;
+    height: 35vh;
+    width: 85vh;
+}
