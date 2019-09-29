@@ -2,12 +2,10 @@ import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
-
 class PrivateRoute extends React.Component {
-
 	constructor(props) {
 		super(props);
-		this.state =  {
+		this.state = {
 			loading: true,
 			isAuthenticated: false,
 			username: ''
@@ -18,18 +16,15 @@ class PrivateRoute extends React.Component {
 		this.authenticate();
 	}
 
-
 	render() {
 		if (this.state.loading) {
 			return null;
 		}
 		if (!this.state.isAuthenticated) {
-			return <Redirect exact to="/login"/>;
+			return <Redirect exact to="/login" />;
 		}
 		const Component = this.props.component;
-		return (
-			<Component {...this.props} username={this.state.username}/>
-		);
+		return <Component {...this.props} username={this.state.username} />;
 	}
 
 	authenticate() {
@@ -43,15 +38,15 @@ class PrivateRoute extends React.Component {
 				this.setState({
 					loading: false,
 					isAuthenticated: true,
-					username: res.data,
+					username: res.data
 				});
 			},
 			(err) => {
 				this.setState({
-					loading: false,
+					loading: false
 				});
 			}
-		); 
+		);
 	}
 }
 
