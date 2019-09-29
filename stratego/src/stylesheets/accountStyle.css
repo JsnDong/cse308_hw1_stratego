@@ -20,6 +20,7 @@
     height: 50px;
     width: 100%;
     padding-top: 2vh;
+    padding-left: 2vh;
     overflow: auto;
 }
 
@@ -83,12 +84,16 @@
 .links {
     padding-right: 1vh;
     padding-left: 1vh;
-    font-weight: bold;
-    color: black;
+    font-weight: lighter;
+    color: white;
 }
 
 .greeting {
     padding-right: 1vh;
-    font-weight: bold;
-    color: black;
+    font-weight: lighter;
+    color: white;
+}
+.pipe{
+    color: white;
+    font-weight: lighter;
 }

@@ -27,10 +27,9 @@ class account extends Component {
 
 	render() {
 		const winRatio = [
-			{ label: '', title: 'Wins', value: 35, color: '#5C61B1' },
-			{ label: '', title: 'Losses', value: 15, color: '	#4098CD' },
-			{ title: 'Surrenders', value: 5, color: '#989FB3' },
-			{ title: 'Draws', value: 5, color: '#B385C8' },
+			{ label: '', title: 'Wins', value: 35, color: '#B385C8' },
+			{ label: '', title: 'Losses', value: 15, color: '#7566BD' },
+			{ title: 'Draws', value: 5, color: '#9CADC1' },
 		];
 		let total = 0;
 		Array.from(winRatio).forEach((data, i) => {
@@ -43,15 +42,15 @@ class account extends Component {
 					<div className="greeting">
 						Hi, {this.state.username}
 					</div>
-					<h5>|</h5>
+					<h5 className="pipe">|</h5>
 					<Link to="/play" className="links">
 						Play!
 					</Link>
-					<h5>|</h5>
+					<h5 className="pipe">|</h5>
 					<Link to="/games" className="links">
 						Game History
 					</Link>
-					<h5>|</h5>
+					<h5 className="pipe">|</h5>
 					<Link to="/login" className="links" onClick={this.handleLogOut}>
 						Sign Out
 					</Link>
@@ -68,13 +67,12 @@ class account extends Component {
 					{ this.state.data[0] ? <h1>{ winRatio[0].title + ': ' + Math.round(((winRatio[0].value)/total)*100) + '%' + ' (' + (winRatio[0].value) + '/' + total + ')'}</h1> : null }
 					{ this.state.data[1] ? <h1>{ winRatio[1].title + ': ' + Math.round(((winRatio[1].value)/total)*100) + '%' + ' (' + (winRatio[1].value) + '/' + total + ')'}</h1> : null }
 					{ this.state.data[2] ? <h1>{ winRatio[2].title + ': ' + Math.round(((winRatio[2].value)/total)*100) + '%' + ' (' + (winRatio[2].value) + '/' + total + ')'}</h1> : null }
-					{ this.state.data[3] ? <h1>{ winRatio[3].title + ': ' + Math.round(((winRatio[3].value)/total)*100) + '%' + ' (' + (winRatio[3].value) + '/' + total + ')'}</h1> : null }
 					</div>
 					<div className="column">
 						<div className="winRateBox">
 							<h1> Win Rate </h1>
 							<h3> 70% (35/50)</h3>
-							<Line style={{width: 250, paddingTop: 20}}percent={Math.floor((winRatio[0].value/total)*100)} strokeWidth="4" strokeColor='lightblue' />
+							<Line style={{width: 250, paddingTop: 20}}percent={Math.floor((winRatio[0].value/total)*100)} strokeWidth="4" strokeColor='#7566BD' />
 						</div>
 						<div className="gameTimeBox">
 							<h1> Average Game Time </h1>
