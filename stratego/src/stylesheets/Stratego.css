@@ -105,7 +105,7 @@
 
 .boardCard {
     box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
-    background-color: linen;
+    background-color:  rgb(243, 243, 243);
 	border-radius: 6px;
 	padding: 6px;
 	display: flex;
