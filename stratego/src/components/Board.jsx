@@ -1,6 +1,7 @@
 import React from 'react';
-
 import { Tile } from './Tile.jsx';
+
+import '../stylesheets/board.scss';
 
 class Board extends React.Component {
 
@@ -19,7 +20,7 @@ class Board extends React.Component {
 		  }
 		  tiles.push(<div className="board_row" key={row}>{tiles_row}</div>);
 		}
-		return <div className={board_class}>{tiles}</div>;
+		return <div disabled={this.props.disabled} className={board_class}>{tiles}</div>;
 	}
 }
 

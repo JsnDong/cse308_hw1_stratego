@@ -20,8 +20,7 @@ class Tile extends React.Component {
   render() {
     const board = this.props.board
     const tile = this.props.tile
-
-    const piece = tile.getPiece()
+    const piece = tile.getPiece();
     const color = piece ? piece.getColor() : null
 
     let reachable = board.getReachable() && board.getReachable().includes(tile)

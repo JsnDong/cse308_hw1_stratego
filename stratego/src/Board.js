@@ -169,6 +169,22 @@ class Board {
 
         return true
     }
+
+    copy() {
+        const copy = new Board(DIMENSION)
+        let deepTiles = matrix(DIMENSION);
+        for (let row = 0; row < DIMENSION; row ++) {
+            for (let col = 0; col < DIMENSION; col ++) {
+                const tile = this.board[row][col];
+                deepTiles[row][col] = new Tile(tile.row,tile.col);
+                deepTiles[row][col].piece = tile.piece;
+            }
+        }
+        copy.board = deepTiles;
+        return copy;
+    }
 }
+
+const DIMENSION = 10;
 
 export default Board

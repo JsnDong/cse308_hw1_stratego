@@ -41,14 +41,14 @@ function hasLost(color, scoreboard, board) {
  */
 export const handleMove = (piece, target_tile) => {
     let result = {}
-    if (!target_tile.getPiece()) {
+    if (!target_tile.piece) {
         result.winner = piece
         result.loser = null
         return result
     }
         
-    const piece_power = Rank.properties[piece.getRank()].power;
-    const target_power = Rank.properties[target_tile.getPiece().getRank()].power;
+    const piece_power = Rank.properties[piece.rank].power;
+    const target_power = Rank.properties[target_tile.piece.rank].power;
 
     if (piece_power === target_power) {
         result.winner = null
@@ -58,13 +58,13 @@ export const handleMove = (piece, target_tile) => {
         (piece_power === 3 && target_power === 11) ||
         (piece_power === 1 && target_power === 10)) {
             result.winner = piece
-            result.loser = target_tile.getPiece()
+            result.loser = target_tile.piece
     } else {
-        result.winner = target_tile.getPiece()
+        result.winner = target_tile.piece
         result.loser = piece
     }
         
-    result.winner.reveal()
+    result.winner.revealed = true;
 
     return result
 };

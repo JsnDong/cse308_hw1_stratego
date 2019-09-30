@@ -12,7 +12,8 @@ import { Redirect, Link } from 'react-router-dom';
 import Mode from "../Mode.js"
 import Color from "../Color.js"
 import Rank from "../Rank.js"
-import Board from "../Board.js"
+import Board from "../Board.js";
+import Tile from '../Tile.js';
 
 class Stratego extends React.Component {
     constructor(props) {
@@ -90,9 +91,12 @@ class Stratego extends React.Component {
         let deepTiles = matrix(DIMENSION);
         for (let row = 0; row < DIMENSION; row ++) {
             for (let col = 0; col < DIMENSION; col ++) {
-                deepTiles[row][col] = board[row][col];
+                const tile = board[row][col];
+                deepTiles[row][col] = new Tile(tile.row,tile.col);
+                deepTiles[row][col].piece = tile.piece;
             }
         }
+        console.log(deepTiles);
         this.state.board.setMode(Mode.PLAY);
         this.setState({
             initialBoard: deepTiles,
@@ -161,11 +165,13 @@ class Stratego extends React.Component {
     }
 
     handleDraw() {
-        this.handleGameOver(Mode.DRAW)
+        this.state.board.setMode(Mode.DRAW);
+        this.isGameOver();
     }
 
     handleWin() {
-        this.handleGameOver(Mode.WON)
+        this.state.board.setMode(Mode.WON);
+        this.isGameOver();
     }
 
     handleLogOut() {

@@ -1,12 +1,14 @@
 import React from 'react';
 import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
-import {Board} from "./Board.jsx"
 import {handleMove} from "../game/validation.js"
 import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import ReplayBoard from './ReplayBoard.jsx';
+import Board from '../Board.js';
+import Tile from '../Tile.js';
+import Piece from '../Piece.js';
 
 
 class Replay extends React.Component {
@@ -40,16 +42,16 @@ class Replay extends React.Component {
 
 		axios.get('http://localhost:8080/getGame/' + id).then(
 			(res) => {
-				console.log(res);
 				const {moveListDe, startListDe} = res.data;
-				const initialBoard = JSON.parse(startListDe);
-				const moves = JSON.parse(moveListDe);
+				const initialBoard = new Board(10);
+				initialBoard.board = this.parseBoard(JSON.parse(startListDe));
+				const moves = this.parseMoves(JSON.parse(moveListDe));
 				console.log(initialBoard);
 				console.log(moves);
 				this.setState({
 					loading: false,
 					board: initialBoard,
-					moves: moves,
+					moves: moves.reverse(), // want to play the game from the beginning
 				});
 			},
 			(err) => {
@@ -60,6 +62,36 @@ class Replay extends React.Component {
 				});
 			}
 		);
+	}
+
+	parseBoard(startBoard) {
+		return startBoard.map(row => {
+			return row.map(tile => {
+				return this.parseTile(tile);
+			});
+		});
+	}
+
+	parseMoves(moves) {
+		return moves.map(move => {
+			
+			const startTile = this.parseTile(move.startTile);
+			const targetTile = this.parseTile(move.targetTile);
+			return new Move(startTile, targetTile);
+		});
+	}
+
+	parseTile(tile) {
+		const newTile = new Tile(tile.row, tile.col);
+		newTile.piece = this.parsePiece(tile.piece);
+		return newTile;
+	}
+
+	parsePiece(piece) {
+		if (piece === null) {
+			return null;
+		}
+		return new Piece(piece.color, piece.rank);
 	}
 }
 

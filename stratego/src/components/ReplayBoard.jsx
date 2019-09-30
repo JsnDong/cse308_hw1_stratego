@@ -11,6 +11,8 @@ class ReplayBoard extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			initialBoard: props.board.copy(),
+			currentMoves: [],
 			board: props.board,
 			movePtr: 0,
 		}
@@ -21,15 +23,16 @@ class ReplayBoard extends React.Component {
 			<div className="stratego">
                 <button onClick={this.rewindMove} disabled={!this.canRewindMove()}>Rewind</button>
                 <button onClick={this.makeMove} disabled={!this.canMakeMove()}>Forward</button>
-                <button onClick={this.handleReplay}>Replay</button>
+                <button onClick={this.replayGame}>Replay</button>
 
-                {<Board mode= {this.state.mode}
+                {<Board disabled={true}
+                		mode={this.state.mode}
                         board={this.state.board}
-                        selected = {this.state.selected}
-                        highlighted = {this.state.highlighted}
+                        selected={this.state.selected}
+                        highlighted={this.state.highlighted}
                         selectTile={this.selectTile}
                         />}
-                {<MoveHistory moves={this.state.moves}/>}
+                {<MoveHistory moves={this.state.currentMoves}/>}
             </div>
 		)
 	}
@@ -44,11 +47,13 @@ class ReplayBoard extends React.Component {
 
 	makeMove = (e) => {
 		const {movePtr, board} = this.state;
-		const {startRow, startCol, endRow, endCol, startPiece, endPiece} = this.props.moves[movePtr];
+		const currentMove = this.props.moves[movePtr];
+		const {startTile, targetTile} = currentMove;
+		this.state.currentMoves.push(currentMove);
 
-		const {winner} = handleMove(startPiece,endPiece);
-		board[endRow][endCol] = winner;
-		board[startRow][startCol] = null;
+		const {winner} = handleMove(startTile.piece,targetTile);
+		board.board[targetTile.row][targetTile.col].piece = winner;
+		board.board[startTile.row][startTile.col].piece = null;
 
 		this.setState({
 			board: board,
@@ -58,13 +63,25 @@ class ReplayBoard extends React.Component {
 
 	rewindMove = (e) => {
 		const {movePtr, board} = this.state;
-		const {startRow, startCol, endRow, endCol, startPiece, endPiece} = this.props.moves[movePtr - 1];
-		board[endRow][endCol] = endPiece;
-		board[startRow][startCol] = startPiece;
- 
+		const {startTile, targetTile} = this.props.moves[movePtr - 1];
+		this.state.currentMoves.shift();
+
+		board.board[targetTile.row][targetTile.col].piece = targetTile.piece;
+		board.board[startTile.row][startTile.col].piece = startTile.piece;
 		this.setState({
 			board: board,
 			movePtr: movePtr - 1
+		});
+	}
+
+	replayGame = (e) => {
+		const initialBoard = this.state.initialBoard;
+		const copy = initialBoard.copy();
+		this.setState({
+			currentMoves: [],
+			movePtr: 0,
+			board: initialBoard,
+			initialBoard: copy,
 		});
 	}
 }

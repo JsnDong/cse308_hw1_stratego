@@ -1,13 +1,13 @@
 import Rank from './Rank.js';
+import Tile from './Tile.js';
 
 
 class Move {
 	constructor(startTile, targetTile) {
-
-		this.startTile = startTile;
-		this.targetTile = targetTile;
-		this.startPiece = startTile.piece;
-		this.targetPiece = targetTile.piece;
+		this.startTile = new Tile(startTile.row, startTile.col);
+		this.targetTile = new Tile(targetTile.row, startTile.col);
+		this.startTile.piece = this.startPiece = startTile.piece;
+		this.targetTile.piece = this.targetPiece = targetTile.piece;
 	}
 
 	toString() {
@@ -39,10 +39,12 @@ class Move {
 	}
 
 	constructSingleCaptureMessage() {
+		const startRank = this.startPiece.getRank();
+		const startPower = Rank.properties[startRank].power;
 		const endColor = this.targetPiece.getColor(); 
 		const endRank = this.targetPiece.getRank();
 		const endPower = Rank.properties[endRank].power;
-		if (this.startPower < endPower) {
+		if (startPower < endPower) {
 			return "got captured at (" + this.targetTile.row + "," + this.targetTile.col + ")!";
 		}
 		else {
