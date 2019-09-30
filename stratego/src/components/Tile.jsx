@@ -1,10 +1,7 @@
 import React from 'react';
 import '../stylesheets/Stratego.css';
-
-import {matrix_includes} from "../LilacArray.js"
 import Color from "../Color.js"
 
-import {ROW, COL} from "./Stratego.jsx"
 import {Piece} from "./Piece.jsx"
 
 class Tile extends React.Component {
@@ -49,7 +46,7 @@ class Tile extends React.Component {
     }
 
     let piece_display = "";
-    if (piece /*&& (color === Color.RED || (color === Color.BLUE && piece.isRevealed()))*/)
+    if (piece && (color === Color.RED || (color === Color.BLUE && piece.isRevealed())))
       piece_display = <Piece piece={piece} />
   
     return (

@@ -18,7 +18,6 @@ class Stratego extends React.Component {
         this.state = {
             board: new Board(DIMENSION),
             scoreboard: this.setScoreboard(),
-            moves: null,
             duration: null 
         }
         this.selectTile = this.selectTile.bind(this)
@@ -82,19 +81,19 @@ class Stratego extends React.Component {
     handleStart() {
         let board = this.state.board
         board.setMode(Mode.PLAY)
+        board.unselect()
         this.setState({
             board: board,
-            moves: [],
-            duration: 0,
+            duration: 0
         });
-        //this.startStopwatch()
+        this.startStopwatch()
     }
 
     isGameOver(result) {
         const board = this.state.board
         if (board.getMode() === Mode.DRAW || board.getMode() === Mode.LOST || board.getMode() === Mode.WON)
             return true
-            /* TO DO: RECORD RESULT ON BACKEND */
+        /* TO DO: RECORD RESULT ON BACKEND */
     }
 
     handleSurrender() {
@@ -116,7 +115,6 @@ class Stratego extends React.Component {
 
     selectTile(row, col) {
         let board = this.state.board
-        let moves = this.state.moves
         const mode = board.getMode()
         const clicked_piece = board.getTile(row, col).getPiece()
 
@@ -146,20 +144,18 @@ class Stratego extends React.Component {
                     board: board
                 })
             } else if (board.getSelected() && board.getReachable().includes(board.getTile(row, col))) {
-                /*
-                if (board.getTurn() !== Color.BLUE)
+                if (board.getTurn() === Color.RED) {
                     this.stopStopwatch()
-                */
+                }
 
                 const selected_piece = board.getSelected().getPiece()
-                console.log(selected_piece)
                 const selected_row = board.getSelected().getRow()
                 const selected_col = board.getSelected().getCol()
                 const target_tile = board.getTile(row, col)
-                const move = new Move(selected_piece, [selected_row, selected_col], target_tile, [row, col]);
 
                 const {winner, loser} = handleMove(selected_piece, target_tile)
-                moves = [move, ...moves];
+                board.addMove(new Move(selected_piece, [selected_row, selected_col], target_tile, [row, col]))
+                console.log(board.getMoves())
 
                 if (winner && loser) {
                     this.updateScoreboard(loser.getColor(), loser.getRank())
@@ -171,29 +167,24 @@ class Stratego extends React.Component {
                 board.getSelected().setPiece(null)
                 board.getTile(row, col).setPiece(winner)
 
-                /*
-                if (board.getTurn() === Color.BLUE)
-                    this.startStopwatch()
-                */
-
-                //board.nextTurn()
-                board.unselect()
-
                 const scoreboard = this.state.scoreboard
-                const player = board.getTurn()
-                const opponent = player === Color.BLUE ? Color.RED : Color.BLUE
 
-                console.log("won: ", board.hasLost(Color.BLUE, scoreboard))
-                if (board.hasLost(player, scoreboard) && board.hasLost(opponent, scoreboard))
+                if (board.hasLost(Color.RED, scoreboard) && board.hasLost(Color.RED, scoreboard)) {
                     board.setMode(Mode.DRAW)
-                else if (board.hasLost(Color.RED, scoreboard))
+                } else if (board.hasLost(Color.RED, scoreboard)) {
                     board.setMode(Mode.LOST)
-                else if (board.hasLost(Color.BLUE, scoreboard))
+                } else if (board.hasLost(Color.BLUE, scoreboard)) {
                     board.setMode(Mode.WON)
+                } else if (board.getTurn() === Color.BLUE) {
+                    this.startStopwatch()
+                }
 
+                
+
+                board.nextTurn()
+                
                 this.setState({
                     board: board,
-                    moves: moves,
                 })
 
                 this.isGameOver()
@@ -222,7 +213,7 @@ class Stratego extends React.Component {
                 {mode}
                 {<BoardComponent board={this.state.board} selectTile={this.selectTile} />}
                 {<Scoreboard scoreboard={this.state.scoreboard} />}
-                {<MoveHistory moves={this.state.moves} />}
+                {<MoveHistory moves={board.getMoves()} />}
             </div>
         );
     }
