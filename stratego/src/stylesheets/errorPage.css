@@ -1,4 +1,4 @@
-.links {
+.logintoplay {
     padding-right: 1vh;
     padding-left: 1vh;
     font-weight: lighter;
@@ -6,7 +6,7 @@
     width: 100%;
     align-items: center;
 }
-.stratego {
+.errorPage {
     background: url(gameBackGround.jpg) no-repeat center center fixed; 
     -webkit-background-size: cover;
     -moz-background-size: cover;

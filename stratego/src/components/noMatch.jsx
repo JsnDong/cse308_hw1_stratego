@@ -7,9 +7,9 @@ import { Button } from 'react-bootstrap';
 export class noMatch extends Component {
 	render() {
 		return (
-			<div className="stratego">
+			<div className="errorPage">
 				<img style={{height: 300, width: '100%', backgroundColor: 'transparent' }} src={titleTxt} />
-				<Link to="/login" className="links" style={{ textDecoration: 'none' }}>
+				<Link to="/login" className="logintoplay" style={{ textDecoration: 'none' }}>
 					<Button style={{ backgroundColor: '#7566BD' }} class="btn btn-primary btn-lg">
 						Login to Play!
 					</Button>

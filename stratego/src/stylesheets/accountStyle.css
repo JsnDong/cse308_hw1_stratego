@@ -1,4 +1,5 @@
 
+
 .info {
     background: url(gameBackGround.jpg) no-repeat center center fixed; 
     -webkit-background-size: cover;
@@ -14,6 +15,7 @@
     flex: 1;
     display: flex;
     justify-content: flex-end;
+    justify-items: flex-end;
     flex-direction: row;
     height: 50px;
     width: 100%;
