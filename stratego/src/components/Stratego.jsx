@@ -333,9 +333,9 @@ class Stratego extends React.Component {
                 </div>
                 <div className="row">
                 <div className="column">
-                    <h3 className="links">
+                    <div className="links">
                     {<Stopwatch duration={this.state.duration} />}
-                    </h3>
+                    </div>
                     
                     {<Scoreboard scoreboard={this.state.scoreboard} className="scoreboard" />}
                 </div>
