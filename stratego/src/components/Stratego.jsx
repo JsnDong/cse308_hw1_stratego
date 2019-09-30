@@ -146,11 +146,9 @@ class Stratego extends React.Component {
 
         axios.post('http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/createGame', game).then(
             (res) => {
-                alert('Received Successful response from server!');
                 console.log(res);
             },
             (err) => {
-                alert('Server rejected response with: ' + err);
             }
         );
     }
@@ -283,23 +281,51 @@ class Stratego extends React.Component {
 
         return (
             <div className="stratego">
-                <button onClick={this.handleShuffle} disabled={shuffle_disabled}>Shuffle</button>
-                <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
-                <button onClick={this.handleWin} disabled={surrender_disabled}>Win</button>
-                <button onClick={this.handleDraw} disabled={surrender_disabled}>Draw</button>
-                <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
-                <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
-                <Link to="/account" style={{ textDecoration: 'none' }}>
-                    <button>Profile</button>
-                </Link>
-                <Link to="/login" style={{ textDecoration: 'none' }}>
-                    <button onClick= {this.handleLogOut}>Sign out</button>
-                </Link>
-                {<Stopwatch duration={this.state.duration} />}
-                {mode}
+                <div className="header">
+                    <Link to="/account" className="links">
+                        Profile
+                    </Link>
+                    <h5 className="pipe">|</h5>
+					<Link to="/login" className="links" onClick={this.handleLogOut}>
+						Sign Out
+					</Link>
+                </div>
+                <div className="row">
+                <div className="column">
+                    <div className="links">
+                    {<Stopwatch duration={this.state.duration} />}
+                    </div>
+                    
+                    {<Scoreboard scoreboard={this.state.scoreboard} className="scoreboard" />}
+                </div>
+                <div className="boardCard">
                 {<BoardComponent board={this.state.board} selectTile={this.selectTile} />}
-                {<Scoreboard scoreboard={this.state.scoreboard} />}
-                {<MoveHistory moves={this.state.moves} />}
+                </div>
+                <div className="column">
+                <div className="subColumn">
+                <div className="header-btn">
+                    <button className="links" onClick={this.handleShuffle} disabled={shuffle_disabled}>
+                        Shuffle
+                    </button>
+                    <h5 className="pipe">|</h5>
+                    <button  className="links" onClick={this.handleStart} disabled={start_disabled}>
+                        Start
+                    </button>
+                    <h5 className="pipe">|</h5>
+                    <button  className="links" onClick={this.handleSurrender} disabled={surrender_disabled}>
+                        Surrender
+                    </button>
+                    <h5 className="pipe">|</h5>
+                    <button  className="links" onClick={this.handlePlayAgain} disabled={playAgain_disabled}>
+                        Play Again
+                    </button>
+                </div>
+                <div className="feed">
+                    {<MoveHistory moves={this.state.moves} />}
+                </div> 
+                    </div>
+                </div>
+                </div>
             </div>
         );
     }

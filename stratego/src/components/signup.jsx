@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { Button, FormGroup, FormControl, FormLabel, ControlLabel } from 'react-bootstrap';
 import axios from 'axios';
 import '../stylesheets/loginStyle.scss';
+import titleTxt from '../stylesheets/StrategoTitle.svg';
 
 class signup extends Component {
 	constructor(props) {
@@ -52,9 +53,11 @@ class signup extends Component {
 		} else {
 			const errorMessage = this.state.errors;
 			return (
-				<div className="Signup">
+				<div className="stratego">
+				<div className="Signup" style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
 					<div className="box-container">
-						<h1 className="Title">Sign Up</h1>
+						<img style={{height: 100, width: '100%' }}src={titleTxt} />
+						<h3> Sign up </h3>
 						<form className="signup_form" onSubmit={this.handleSignUp}>
 							<FormGroup controlId="formBasicText" bsSize="large">
 								<FormControl
@@ -73,21 +76,13 @@ class signup extends Component {
 									required
 								/>
 							</FormGroup>
-							<FormGroup controlId="password" bsSize="large">
-								<FormControl
-									name="confirm_password"
-									onChange={(e) => this.handleFieldChange(e, 'confirm_password')}
-									type="password"
-									placeholder="Confirm Password"
-									required
-								/>
-							</FormGroup>
 							<p style={{ color: 'red' }}> {errorMessage}</p>
-							<Button block bsSize="large" type="submit">
-								Submit
+							<Button style={{ backgroundColor: '#7566BD' }} block bsSize="large" type="submit">
+								Sign Up
 							</Button>
 						</form>
 					</div>
+				</div>
 				</div>
 			);
 		}

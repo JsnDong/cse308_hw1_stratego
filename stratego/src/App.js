@@ -25,7 +25,6 @@ class App extends Component {
 						<PrivateRoute exact path="/play" component={Stratego} />
 						<Route exact path="/signup" component={SignUp} />
 						<PrivateRoute exact path="/account" component={Account} />
-						<Route exact path="/replay" component={Replay} />
 						<PrivateRoute exact path="/games" component={Games} />
 						<Route exact path="/test" component={Test} />
 						<Route exact path="/replay/:id" component={Replay}/>

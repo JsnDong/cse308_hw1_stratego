@@ -40,7 +40,7 @@ class Replay extends React.Component {
 	getGameInfo() {
 		const {id} = this.props.match.params;
 
-		axios.get('http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/getGame' + id).then(
+		axios.get('http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/getGame/' + id).then(
 			(res) => {
 				const {moveListDe, startListDe} = res.data;
 				const initialBoard = new Board(10);
@@ -91,7 +91,9 @@ class Replay extends React.Component {
 		if (piece === null) {
 			return null;
 		}
-		return new Piece(piece.color, piece.rank);
+		const copiedPiece = new Piece(piece.color, piece.rank);
+		copiedPiece.revealed = true;
+		return copiedPiece;
 	}
 }
 

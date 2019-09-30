@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import axios from 'axios';
+import '../stylesheets/games.css';
 
 export class games extends Component {
 	constructor(props) {
@@ -37,20 +38,28 @@ export class games extends Component {
 
 	render() {
 		return (
-			<div>
-				<h1>History</h1>
-				<Link to="/account" style={{ textDecoration: 'none' }}>
-					<button>My Profile</button>
+			<div className="gameHistory">
+				<div className="header">
+				<Link className="links" to="/account">
+					My Profile
 				</Link>
+				</div>
+				<h1>History</h1>
 				<div className="historyContainer">
 					{this.state.games.map((element) => (
+						<div className="gameContainer">
 						<div className="gamesRowList">
-							<h4 key={element.gameNumber}> Game ID : {element.gameNumber}</h4>
-							<h4> Result : {this.exchange(element.winLose)}</h4>
-							<h4>Game Time : {element.time}</h4>
+							<div className= "headings">
+								<h3> Result : {this.exchange(element.winLose)}</h3>
+								<h4 key={element.gameNumber}> Game # {element.gameNumber}</h4>
+								<h4> Time: {element.time}</h4>
+							</div>
+							<div className="replayBtnContainer">
 							<Link to={"/replay/" + element.gameNumber} style={{ textDecoration: 'none' }}>
-								<button>Watch Replay</button>
+								Watch Replay
 							</Link>
+							</div>
+						</div>
 						</div>
 					))}
 				</div>

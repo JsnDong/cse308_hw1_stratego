@@ -3,6 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { Button, FormGroup, FormControl, FormLabel, ControlLabel } from 'react-bootstrap';
 import axios from 'axios';
 import '../stylesheets/loginStyle.scss';
+import titleTxt from '../stylesheets/StrategoTitle.svg';
 
 class login extends Component {
 	constructor(props) {
@@ -51,9 +52,11 @@ class login extends Component {
 		} else {
 			const errorMessage = this.state.errors;
 			return (
-				<div className="Login">
+				<div className="stratego">
+				<div className="Login" style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '90vh'}}>
 					<div className="box-container">
-						<h1 className="Title">Log In</h1>
+						<img style={{height: 100, width: '100%' }}src={titleTxt} />
+						<h1 className="formTitle">Log In</h1>
 						<form className="login_form" onSubmit={this.handleSubmit}>
 							<FormGroup controlId="formBasicText" bsSize="large">
 								<FormControl
@@ -73,7 +76,7 @@ class login extends Component {
 								/>
 							</FormGroup>
 							<p style={{ color: 'red' }}> {errorMessage}</p>
-							<Button block bsSize="large" type="submit">
+							<Button style={{ backgroundColor: '#7566BD' }} block bsSize="large" type="submit">
 								Login
 							</Button>
 							<Link to="/signup">
@@ -81,6 +84,7 @@ class login extends Component {
 							</Link>
 						</form>
 					</div>
+				</div>
 				</div>
 			);
 		}

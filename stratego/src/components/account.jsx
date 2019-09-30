@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import axios from 'axios';
+import PieChart from 'react-minimal-pie-chart';
+import '../stylesheets/accountStyle.css';
+import Background from '../stylesheets/gameBackGround.jpg';
+import { Line } from 'rc-progress';
 
 class account extends Component {
 	constructor(props) {
@@ -10,7 +14,8 @@ class account extends Component {
 			win: 0,
 			lose: 0,
 			draw: 0,
-			avgTime: ''
+			avgTime: '',
+			data : [true, false, false, false],
 		};
 	}
 
@@ -37,29 +42,73 @@ class account extends Component {
 				console.log(err);
 			}
 		);
+	}
+
+	handleMouseOver = (event, data, dataIndex) => {
+		let newData =[false, false, false, false];
+		newData[dataIndex] = true;
+		this.setState({ data : newData });
 	};
 
 	render() {
+		const { win, lose, draw, avgTime} = this.state
+		console.log({win, lose, draw, avgTime});
+		const winRatio = [
+			{ label: '', title: 'Wins', value: parseInt(win), color: '#B385C8' },
+			{ label: '', title: 'Losses', value: parseInt(lose), color: '#7566BD' },
+			{ title: 'Draws', value: parseInt(draw), color: '#9CADC1' },
+		];
+		let total = 0;
+		Array.from(winRatio).forEach((data, i) => {
+			total += data.value;
+		});
+
 		return (
-			<div className="info">
-				<h1>My Account Page</h1>
-				<div>
-					<Link to="/play" style={{ textDecoration: 'none' }}>
-						<button>Play!</button>
+			<div className="info" >
+				<div className="header">
+					<div className="greeting">
+						Hi, {this.state.username}
+					</div>
+					<h5 className="pipe">|</h5>
+					<Link to="/play" className="links">
+						Play!
 					</Link>
-					<Link to="/login" style={{ textDecoration: 'none' }}>
-						<button onClick={this.handleLogOut}>Sign out</button>
+					<h5 className="pipe">|</h5>
+					<Link to="/games" className="links">
+						Game History
 					</Link>
-					<ul>
-						<h3>Username: {this.state.username}</h3>
-						<Link to="/games" style={{ textDecoration: 'none' }}>
-							<li>Past Games</li>
-						</Link>
-						<li> Total Win: {this.state.win}</li>
-						<li> Total Lost: {this.state.lose}</li>
-						<li> Total Draw: {this.state.draw}</li>
-						<li> Average Game Time: {this.state.avgTime} </li>
-					</ul>
+					<h5 className="pipe">|</h5>
+					<Link to="/login" className="links" onClick={this.handleLogOut}>
+						Sign Out
+					</Link>
+				</div>
+				<div className="row">
+				<div className="pieChartBox">
+					<PieChart
+						onMouseOver={(event, data, dataIndex) => {this.handleMouseOver(event, data, dataIndex)}}
+						label="Wins/Losses"
+						labelStyle={{color: 'black'}}
+						style={{width: 200, height: 200}}
+						data={winRatio}
+						/>
+					{ this.state.data[0] ? <h1>{ winRatio[0].title + ': ' + Math.round((parseFloat((winRatio[0].value))/parseFloat(total))*100) + '%' + ' (' + (winRatio[0].value) + '/' + total + ')'}</h1> : null }
+					{ this.state.data[1] ? <h1>{ winRatio[1].title + ': ' + Math.round((parseFloat((winRatio[1].value))/parseFloat(total))*100) + '%' + ' (' + (winRatio[1].value) + '/' + total + ')'}</h1> : null }
+					{ this.state.data[2] ? <h1>{ winRatio[2].title + ': ' +Math.round((parseFloat((winRatio[2].value))/parseFloat(total))*100) + '%' + ' (' + (winRatio[2].value) + '/' + total + ')'}</h1> : null }
+					</div>
+					<div className="column">
+						<div className="winRateBox">
+							<h1> Win Rate </h1>
+							<h3>{Math.round((parseFloat((winRatio[0].value))/parseFloat(total))*100) + '%' + ' (' + (winRatio[0].value) + '/' + total + ')'}</h3>
+							<Line style={{width: 250, paddingTop: 20}}percent={Math.floor((winRatio[0].value/total)*100)} strokeWidth="4" strokeColor='#7566BD' />
+						</div>
+						<div className="space" >
+
+						</div>
+						<div className="gameTimeBox">
+							<h1> Average Game Time </h1>
+							<h3> {avgTime} min</h3>
+						</div>
+					</div>
 				</div>
 			</div>
 		);

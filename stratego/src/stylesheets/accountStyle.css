@@ -1,0 +1,103 @@
+
+
+.info {
+    background: url(gameBackGround.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    width: 100%;
+    height: 300vh;
+    overflow: hidden;
+}
+
+.header {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    justify-items: flex-end;
+    flex-direction: row;
+    height: 50px;
+    width: 100%;
+    padding-top: 2vh;
+    padding-left: 2vh;
+    overflow: auto;
+}
+
+.title { 
+    font-size: 10px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-content: space-evenly;
+    overflow: auto;
+}
+.row {
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-evenly;
+    padding-top: 5vh;
+    overflow: auto;
+}
+.pieChartBox {
+    box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
+    background-color: rgb(243, 243, 243);
+	border-radius: 6px;
+    padding: 15vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    justify-self: center;
+    align-self: center;
+    align-content: center;
+    flex-direction: column;
+    height: 80vh;
+    width: 95vh;
+}
+
+.gameTimeBox {
+    box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
+    background-color: rgb(243, 243, 243);
+	border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 35vh;
+    width: 85vh;
+}
+
+.winRateBox {
+    box-shadow: 10px 10px 20px 10px rgba(21, 0, 46, 0.2);
+    background-color: rgb(243, 243, 243);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    height: 35vh;
+    width: 85vh;
+}
+.links {
+    padding-right: 1vh;
+    padding-left: 1vh;
+    font-weight: lighter;
+    color: white;
+}
+
+.greeting {
+    padding-right: 1vh;
+    font-weight: lighter;
+    color: white;
+}
+.pipe{
+    color: white;
+    font-weight: lighter;
+}
+.space{
+    height: 10%;
+}

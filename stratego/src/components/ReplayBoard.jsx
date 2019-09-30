@@ -5,7 +5,7 @@ import {handleMove} from "../game/validation.js"
 import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import {Link} from 'react-router-dom';
 
 class ReplayBoard extends React.Component {
 	constructor(props) {
@@ -24,6 +24,7 @@ class ReplayBoard extends React.Component {
                 <button onClick={this.rewindMove} disabled={!this.canRewindMove()}>Rewind</button>
                 <button onClick={this.makeMove} disabled={!this.canMakeMove()}>Forward</button>
                 <button onClick={this.replayGame}>Replay</button>
+                <Link to ="/account"><button>Profile</button></Link>
 
                 {<Board disabled={true}
                 		mode={this.state.mode}
@@ -32,7 +33,9 @@ class ReplayBoard extends React.Component {
                         highlighted={this.state.highlighted}
                         selectTile={this.selectTile}
                         />}
-                {<MoveHistory moves={this.state.currentMoves}/>}
+                <div className="feed">
+                    {<MoveHistory moves={this.state.currentMoves}/>}
+                </div> 
             </div>
 		)
 	}
