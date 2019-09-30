@@ -12,8 +12,6 @@ import PrivateRoute from './components/PrivateRoute.jsx';
 import NoMatch from './components/noMatch.jsx';
 import Games from './components/games.jsx';
 
-import Test from './components/test.jsx';
-
 class App extends Component {
 	render() {
 		return (
@@ -26,7 +24,6 @@ class App extends Component {
 						<Route exact path="/signup" component={SignUp} />
 						<PrivateRoute exact path="/account" component={Account} />
 						<PrivateRoute exact path="/games" component={Games} />
-						<Route exact path="/test" component={Test} />
 						<Route exact path="/replay/:id" component={Replay}/>
 						<Route component={NoMatch} />
 					</Switch>
