@@ -28,7 +28,7 @@ class signup extends Component {
 		};
 		e.preventDefault();
 
-		axios.post('http://localhost:8080/userPost', user).then(
+		axios.post('http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/userPost', user).then(
 			(response) => {
 				console.log(response);
 				this.setState({ redirect: true });
@@ -97,11 +97,16 @@ class signup extends Component {
 			return false;
 		}
 		console.log(localStorage.getItem('token'));
-		axios.post('http://localhost:8080/token-auth', localStorage.getItem('token')).then((res) => {
-			if (res.data) {
-				this.setState({ authenticated: true });
-			}
-		});
+		axios
+			.post(
+				'http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/token-auth',
+				localStorage.getItem('token')
+			)
+			.then((res) => {
+				if (res.data) {
+					this.setState({ authenticated: true });
+				}
+			});
 	}
 }
 

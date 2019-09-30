@@ -33,20 +33,25 @@ class PrivateRoute extends React.Component {
 				loading: false,
 			});
 		}
-		axios.post('http://localhost:8080/token-auth', localStorage.getItem('token')).then(
-			(res) => {
-				this.setState({
-					loading: false,
-					isAuthenticated: true,
-					username: res.data
-				});
-			},
-			(err) => {
-				this.setState({
-					loading: false
-				});
-			}
-		);
+		axios
+			.post(
+				'http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/token-auth',
+				localStorage.getItem('token')
+			)
+			.then(
+				(res) => {
+					this.setState({
+						loading: false,
+						isAuthenticated: true,
+						username: res.data
+					});
+				},
+				(err) => {
+					this.setState({
+						loading: false
+					});
+				}
+			);
 	}
 }
 
