@@ -26,6 +26,7 @@ class Stratego extends React.Component {
         this.handleStart = this.handleStart.bind(this)
         this.handleSurrender = this.handleSurrender.bind(this)
         this.handlePlayAgain = this.handlePlayAgain.bind(this)
+        this.handleTest = this.handleTest.bind(this)
     }
 
     setScoreboard() {
@@ -111,6 +112,18 @@ class Stratego extends React.Component {
             scoreboard: this.setScoreboard(),
             duration: 0
         })
+    }
+
+    handleTest() {
+        let board = this.state.board
+        if (board.getMode() !== Mode.TEST) {
+            board.setMode(Mode.TEST)
+            this.setState({
+                board: board
+            })
+        } else {
+            this.handlePlayAgain()
+        }
     }
 
     selectTile(row, col) {
@@ -201,6 +214,7 @@ class Stratego extends React.Component {
         let playAgain_disabled = mode !== Mode.WON &&
                                  mode !== Mode.LOST &&
                                  mode !== Mode.DRAW
+        let test_mode_disabled = mode === Mode.PLAY
 
         return (
             <div className="stratego">
@@ -208,6 +222,10 @@ class Stratego extends React.Component {
                 <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
                 <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
                 <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
+
+                <button onClick={this.handleTestMode} disabled={test_mode_disabled}>
+                    {board.getMode() == Mode.TEST_SETUP? "Leave Test Mode": "Start Test Mode"}
+                </button>
                 
                 {<Stopwatch duration={this.state.duration} />}
                 {mode}

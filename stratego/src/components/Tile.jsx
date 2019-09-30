@@ -1,5 +1,7 @@
 import React from 'react';
 import '../stylesheets/Stratego.css';
+
+import Mode from "../Mode.js"
 import Color from "../Color.js"
 
 import {Piece} from "./Piece.jsx"
@@ -46,7 +48,7 @@ class Tile extends React.Component {
     }
 
     let piece_display = "";
-    if (piece && (color === Color.RED || (color === Color.BLUE && piece.isRevealed())))
+    if (piece && (board.getMode() === Mode.TEST || color === Color.RED || (color === Color.BLUE && piece.isRevealed())))
       piece_display = <Piece piece={piece} />
   
     return (
