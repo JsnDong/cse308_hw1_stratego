@@ -9,7 +9,7 @@ import ReplayBoard from './ReplayBoard.jsx';
 import Board from '../Board.js';
 import Tile from '../Tile.js';
 import Piece from '../Piece.js';
-
+import '../stylesheets/replayBoard.css'
 
 class Replay extends React.Component {
 	constructor(props) {
