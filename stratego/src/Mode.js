@@ -4,7 +4,8 @@ const Mode = {
     WON: "WON",
     LOST: "LOST",
     DRAW: "DRAW",
-    TEST: "TEST"
+    TEST_SETUP: "TEST_SETUP",
+    TEST_PLAY: "TEST_PLAY"
 }
 
 export default Mode

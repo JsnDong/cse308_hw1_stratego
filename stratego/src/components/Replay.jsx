@@ -1,15 +1,14 @@
 import React from 'react';
-import {isEqual, matrix, matrix_includes} from "../LilacArray.js"
-import {handleMove} from "../game/validation.js"
-import {Move} from "../Move.js";
-import MoveHistory from "./MoveHistory.jsx";
+import { isEqual, matrix, matrix_includes } from '../LilacArray.js';
+import { handleMove } from '../game/validation.js';
+import Move from '../Move.js';
+import MoveHistory from './MoveHistory.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import ReplayBoard from './ReplayBoard.jsx';
 import Board from '../Board.js';
 import Tile from '../Tile.js';
 import Piece from '../Piece.js';
-
 
 class Replay extends React.Component {
 	constructor(props) {
@@ -18,8 +17,8 @@ class Replay extends React.Component {
 			loading: true,
 			errors: null,
 			board: null,
-			moves: [],
-		}
+			moves: []
+		};
 		this.getGameInfo();
 	}
 
@@ -29,20 +28,23 @@ class Replay extends React.Component {
 		}
 
 		if (this.state.errors) {
-			return ( 
-				<div> <h1> Game does not exist! </h1> </div>
+			return (
+				<div>
+					{' '}
+					<h1> Game does not exist! </h1>{' '}
+				</div>
 			);
 		}
 
-		return <ReplayBoard board={this.state.board} moves={this.state.moves}/>;
+		return <ReplayBoard board={this.state.board} moves={this.state.moves} />;
 	}
 
 	getGameInfo() {
-		const {id} = this.props.match.params;
+		const { id } = this.props.match.params;
 
 		axios.get('http://ec2-3-17-72-230.us-east-2.compute.amazonaws.com:8080/getGame/' + id).then(
 			(res) => {
-				const {moveListDe, startListDe} = res.data;
+				const { moveListDe, startListDe } = res.data;
 				const initialBoard = new Board(10);
 				initialBoard.board = this.parseBoard(JSON.parse(startListDe));
 				const moves = this.parseMoves(JSON.parse(moveListDe));
@@ -51,30 +53,29 @@ class Replay extends React.Component {
 				this.setState({
 					loading: false,
 					board: initialBoard,
-					moves: moves.reverse(), // want to play the game from the beginning
+					moves: moves.reverse() // want to play the game from the beginning
 				});
 			},
 			(err) => {
 				alert(err);
 				this.setState({
 					loading: false,
-					errors: err,
+					errors: err
 				});
 			}
 		);
 	}
 
 	parseBoard(startBoard) {
-		return startBoard.map(row => {
-			return row.map(tile => {
+		return startBoard.map((row) => {
+			return row.map((tile) => {
 				return this.parseTile(tile);
 			});
 		});
 	}
 
 	parseMoves(moves) {
-		return moves.map(move => {
-			
+		return moves.map((move) => {
 			const startTile = this.parseTile(move.startTile);
 			const targetTile = this.parseTile(move.targetTile);
 			return new Move(startTile, targetTile);
