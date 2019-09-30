@@ -1,37 +1,76 @@
-import {isEqual as arrayIsEqual} from "./LilacArray.js"
+import Rank from './Rank.js';
+import Tile from './Tile.js';
 
 class Move {
-	constructor(startPiece,startTile,targetPiece,targetTile) {
-		this.startPiece = startPiece;
-		this.startTile = startTile;
-		this.targetPiece = targetPiece;
-		this.targetTile = targetTile;
+	constructor(startTile, targetTile) {
+		this.startTile = new Tile(startTile.getRow(), startTile.getCol())
+		this.targetTile = new Tile(targetTile.getRow(), targetTile.getCol())
+		this.startTile.setPiece(startTile.getPiece())
+		this.targetTile.setPiece(targetTile.getPiece())
+	}
+
+	getStart() {
+		return this.startTile
+	}
+
+	getTarget() {
+		return this.targetTile
 	}
 
 	toString() {
-		const [startRow, startCol] = this.startTile;
-		const [endRow, endCol] = this.targetTile;
-		const selected_piece = this.startPiece;
-		
-		const color = selected_piece.getColor();
-		const rank = color == "RED" ? selected_piece.getRank() : "Piece";	// hide rank of AI
+		const startColor = this.getStart().getPiece().getColor()
+		const startRank = this.getStart().getPiece().getRank()
 
-		const startMessage = rank + " (" + color[0] + ") at (" + startRow + "," + startCol + ") ";
-		let actionMessage = " moved to (" + endRow + "," + endCol + ")";
-		if (this.targetPiece.getPiece()) {
-			const target_color = this.targetPiece.getPiece().getColor()
-			const target_rank = this.targetPiece.getPiece().getRank()
-			actionMessage = "captured " + target_rank + "(" + target_color[0] + ") at (" + endRow + "," + endCol + ")";
+		const rank = startColor == "RED" || this.getStart().getPiece().isRevealed() ? startRank : "Piece";
+		const startMessage = rank + " (" + startColor[0] + ") at (" + this.startTile.row + "," + this.startTile.col + ") ";
+
+		if (this.getTarget().getPiece() === null) {
+			return startMessage + this.constructMoveMessage();
 		}
 
-		return startMessage + actionMessage;
+		const endRank = this.getTarget().getPiece().getRank();
+		const endPower = Rank.properties[endRank].power;
+		if (this.startPower == endPower) {
+			return this.constructBothCaptureMessage();
+		}
+		else {
+			return startMessage + this.constructSingleCaptureMessage();
+		}
+	}
+
+	constructMoveMessage() {
+		return " moved to (" + this.getTarget().getRow() + "," + this.getTarget().getCol() + ")";
+	}
+
+	constructSingleCaptureMessage() {
+		const startRank = this.getStart().getPiece().getRank();
+		const startPower = Rank.properties[startRank].power;
+		const endColor = this.getTarget().getPiece().getColor(); 
+		const endRank = this.getTarget().getPiece().getRank();
+		const endPower = Rank.properties[endRank].power;
+		if (startPower < endPower) {
+			return "got captured at (" + this.getTarget().getRow() + "," + this.getTarget().getCol() + ")!";
+		}
+		else {
+			return "captured " + endRank + "(" + endColor[0] + ") at (" + this.getTarget().getRow() + "," + this.getTarget().getCol() + ")";
+		}
+	}
+
+	constructBothCaptureMessage() {
+		const startColor = this.startPiece.color();
+		const startRank = this.startPiece.getRank();
+		const endColor = this.targetPiece.getColor(); 
+		const endRank = this.targetPiece.getRank();
+
+		const startPieceString = startRank + " (" + startColor[0] + ")";
+		const endPiece = endRank + " (" + endColor[0] + ") ";
+		return "Both " + startPieceString + " and " + endPiece + "got captured at (" + this.targetTile.row + "," + this.targetTile.col + ")!";
 	}
 
 	isEqual(move) {
-		return this.startPiece == move.startPiece && 
-			   arrayIsEqual(this.startTile, move.startTile) && 
-			   arrayIsEqual(this.targetTile, move.targetTile)
+		return this.getStart().getPiece() === move.getStart().getPiece() &&
+			   this.getStart().isEqual(move.getStart()) && this.getTarget().isEqual(move.getTarget())
 	}
 }
 
-export {Move};
+export default Move

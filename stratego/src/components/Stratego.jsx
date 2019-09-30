@@ -1,13 +1,11 @@
 import React from 'react';
-import {matrix_includes} from "../LilacArray.js"
 import {Board as BoardComponent} from "./Board.jsx"
-import {handleMove, hasLost} from "../game/validation.js"
-import {Move} from "../Move.js";
 import MoveHistory from "./MoveHistory.jsx";
 import { Scoreboard } from './Scoreboard.jsx';
 import Stopwatch from './stopwatch.jsx';
 
 import Mode from "../Mode.js"
+import Move from "../Move.js";
 import Color from "../Color.js"
 import Rank from "../Rank.js"
 import Board from "../Board.js"
@@ -27,6 +25,7 @@ class Stratego extends React.Component {
         this.handleSurrender = this.handleSurrender.bind(this)
         this.handlePlayAgain = this.handlePlayAgain.bind(this)
         this.handleTest = this.handleTest.bind(this)
+        this.handleAutomove = this.handleAutomove.bind(this)
     }
 
     setScoreboard() {
@@ -92,6 +91,7 @@ class Stratego extends React.Component {
 
     isGameOver(result) {
         const board = this.state.board
+        this.stopStopwatch()
         if (board.getMode() === Mode.DRAW || board.getMode() === Mode.LOST || board.getMode() === Mode.WON)
             return true
         /* TO DO: RECORD RESULT ON BACKEND */
@@ -125,9 +125,42 @@ class Stratego extends React.Component {
             this.handlePlayAgain()
         }
     }
+    
+    handleAutomove() {
+        let board = this.state.board
+        let scoreboard = this.state.scoreboard
+        const red_move = board.autoMove(Color.RED)
+        board.applyMove(red_move, scoreboard)
+        board.addMove(red_move)
+        if (board.hasLost(Color.RED, scoreboard) && board.hasLost(Color.RED, scoreboard)) {
+            board.setMode(Mode.DRAW)
+        } else if (board.hasLost(Color.RED, scoreboard)) {
+            board.setMode(Mode.LOST)
+        } else if (board.hasLost(Color.BLUE, scoreboard)) {
+            board.setMode(Mode.WON)
+        }
+        board.nextTurn()
+        const blue_move = board.autoMove(Color.BLUE)
+        board.applyMove(blue_move, scoreboard)
+        board.addMove(blue_move)
+        if (board.hasLost(Color.RED, scoreboard) && board.hasLost(Color.RED, scoreboard)) {
+            board.setMode(Mode.DRAW)
+        } else if (board.hasLost(Color.RED, scoreboard)) {
+            board.setMode(Mode.LOST)
+        } else if (board.hasLost(Color.BLUE, scoreboard)) {
+            board.setMode(Mode.WON)
+        }
+        board.nextTurn()
+        this.setState({
+            board: board,
+            scoreboard: scoreboard
+        });
+    }
 
     selectTile(row, col) {
         let board = this.state.board
+        let scoreboard = this.state.scoreboard
+
         const mode = board.getMode()
         const clicked_piece = board.getTile(row, col).getPiece()
 
@@ -145,7 +178,7 @@ class Stratego extends React.Component {
             this.setState({
                 board: board
             })
-        } else if (mode === Mode.PLAY) {           
+        } else if (mode === Mode.PLAY) {
             if (!board.getSelected() && clicked_piece && clicked_piece.getColor() === board.getTurn()) {
                 board.setSelected(row, col)
                 this.setState({
@@ -157,30 +190,15 @@ class Stratego extends React.Component {
                     board: board
                 })
             } else if (board.getSelected() && board.getReachable().includes(board.getTile(row, col))) {
-                if (board.getTurn() === Color.RED) {
-                    this.stopStopwatch()
-                }
+                this.stopStopwatch()
 
-                const selected_piece = board.getSelected().getPiece()
-                const selected_row = board.getSelected().getRow()
-                const selected_col = board.getSelected().getCol()
-                const target_tile = board.getTile(row, col)
+                let start_tile = board.getSelected()
+                let target_tile = board.getTile(row, col)
+                const red_move = new Move(start_tile, target_tile)
 
-                const {winner, loser} = handleMove(selected_piece, target_tile)
-                board.addMove(new Move(selected_piece, [selected_row, selected_col], target_tile, [row, col]))
-                console.log(board.getMoves())
-
-                if (winner && loser) {
-                    this.updateScoreboard(loser.getColor(), loser.getRank())
-                } else if (!winner && !loser) {
-                    this.updateScoreboard(selected_piece.getColor(), selected_piece.getRank())
-                    this.updateScoreboard(target_tile.getPiece().getColor(), target_tile.getPiece().getRank())
-                }
-
-                board.getSelected().setPiece(null)
-                board.getTile(row, col).setPiece(winner)
-
-                const scoreboard = this.state.scoreboard
+                board.applyMove(red_move, scoreboard)
+                board.addMove(red_move)
+                board.nextTurn()
 
                 if (board.hasLost(Color.RED, scoreboard) && board.hasLost(Color.RED, scoreboard)) {
                     board.setMode(Mode.DRAW)
@@ -188,16 +206,26 @@ class Stratego extends React.Component {
                     board.setMode(Mode.LOST)
                 } else if (board.hasLost(Color.BLUE, scoreboard)) {
                     board.setMode(Mode.WON)
-                } else if (board.getTurn() === Color.BLUE) {
-                    this.startStopwatch()
+                } 
+                
+                const blue_move = board.autoMove(Color.BLUE)
+                board.applyMove(blue_move, scoreboard)
+                board.addMove(blue_move)
+                board.nextTurn()
+
+                if (board.hasLost(Color.RED, scoreboard) && board.hasLost(Color.RED, scoreboard)) {
+                    board.setMode(Mode.DRAW)
+                } else if (board.hasLost(Color.RED, scoreboard)) {
+                    board.setMode(Mode.LOST)
+                } else if (board.hasLost(Color.BLUE, scoreboard)) {
+                    board.setMode(Mode.WON)
                 }
 
-                
+                this.startStopwatch()
 
-                board.nextTurn()
-                
                 this.setState({
                     board: board,
+                    scoreboard: scoreboard
                 })
 
                 this.isGameOver()
@@ -214,6 +242,7 @@ class Stratego extends React.Component {
         let playAgain_disabled = mode !== Mode.WON &&
                                  mode !== Mode.LOST &&
                                  mode !== Mode.DRAW
+        let automove_disabled = mode !== Mode.PLAY
         let test_mode_disabled = mode === Mode.PLAY
 
         return (
@@ -222,7 +251,6 @@ class Stratego extends React.Component {
                 <button onClick={this.handleStart} disabled={start_disabled}>Start</button>
                 <button onClick={this.handleSurrender} disabled={surrender_disabled}>Surrender</button>
                 <button onClick={this.handlePlayAgain} disabled={playAgain_disabled}>Play Again</button>
-
                 <button onClick={this.handleTestMode} disabled={test_mode_disabled}>
                     {board.getMode() == Mode.TEST_SETUP? "Leave Test Mode": "Start Test Mode"}
                 </button>
@@ -230,6 +258,7 @@ class Stratego extends React.Component {
                 {<Stopwatch duration={this.state.duration} />}
                 {mode}
                 {<BoardComponent board={this.state.board} selectTile={this.selectTile} />}
+                <button onClick={this.handleAutomove} disabled={automove_disabled}> Automove </button>
                 {<Scoreboard scoreboard={this.state.scoreboard} />}
                 {<MoveHistory moves={board.getMoves()} />}
             </div>
