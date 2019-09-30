@@ -1,0 +1,44 @@
+.replaycontainer {
+    display: flex;
+    flex-direction: row;
+    padding: 5%;
+}
+.replayboard {
+    box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
+    background-color:  rgb(243, 243, 243);
+	border-radius: 6px;
+	padding: 6px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: fit-content;
+	height: 40%;
+}
+
+.replayfeed {
+	box-shadow: 10px 10px 20px 10px rgba(15, 15, 15, 0.2);
+    background-color: rgb(243, 243, 243);
+	border-radius: 6px;
+	padding-top: 6px;
+    width: 30%;
+}
+
+.spacereplay {
+     width: 10%;
+ }
+.replayrow {
+    display: flex;
+    flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	min-width: 25%;
+}
+
+.replaycol {
+    display: flex;
+    flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+    min-width: 10%;
+    height: 20%;
+}

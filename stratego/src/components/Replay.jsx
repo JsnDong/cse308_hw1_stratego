@@ -9,6 +9,8 @@ import ReplayBoard from './ReplayBoard.jsx';
 import Board from '../Board.js';
 import Tile from '../Tile.js';
 import Piece from '../Piece.js';
+import { Redirect } from 'react-router-dom';
+import '../stylesheets/replayBoard.css';
 
 class Replay extends React.Component {
 	constructor(props) {
@@ -28,12 +30,7 @@ class Replay extends React.Component {
 		}
 
 		if (this.state.errors) {
-			return (
-				<div>
-					{' '}
-					<h1> Game does not exist! </h1>{' '}
-				</div>
-			);
+			return <Redirect to="/404" />;
 		}
 
 		return <ReplayBoard board={this.state.board} moves={this.state.moves} />;
@@ -57,7 +54,6 @@ class Replay extends React.Component {
 				});
 			},
 			(err) => {
-				alert(err);
 				this.setState({
 					loading: false,
 					errors: err

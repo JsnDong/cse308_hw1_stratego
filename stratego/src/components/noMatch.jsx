@@ -14,7 +14,6 @@ export class noMatch extends Component {
 						Login to Play!
 					</Button>
 				</Link>
-				
 			</div>
 		);
 	}

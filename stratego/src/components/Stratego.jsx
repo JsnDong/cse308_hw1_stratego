@@ -159,12 +159,20 @@ class Stratego extends React.Component {
 	}
 
 	handleDraw() {
-		this.state.board.setMode(Mode.DRAW);
+		let board = this.state.board;
+		board.setMode(Mode.DRAW);
+		this.setState({
+			board: board
+		});
 		this.isGameOver();
 	}
 
 	handleWin() {
-		this.state.board.setMode(Mode.WON);
+		let board = this.state.board;
+		board.setMode(Mode.WON);
+		this.setState({
+			board: board
+		});
 		this.isGameOver();
 	}
 
@@ -305,6 +313,12 @@ class Stratego extends React.Component {
 		let automove_disabled = mode !== Mode.PLAY;
 		let test_mode_disabled = mode === Mode.PLAY;
 
+		let shuffleBtnColor = shuffle_disabled ? 'grey' : '';
+		let startbtn_disabled = start_disabled ? 'grey' : '';
+		let surrenderbtn_disabled = surrender_disabled ? 'grey' : '';
+		let playAgainbtn_disabled = playAgain_disabled ? 'grey' : '';
+		let automoveBtn_disabled = automove_disabled ? 'grey' : '';
+
 		return (
 			<div className="stratego">
 				<div className="header">
@@ -318,7 +332,10 @@ class Stratego extends React.Component {
 				</div>
 				<div className="row">
 					<div className="column">
-						<div className="links">{<Stopwatch duration={this.state.duration} />}</div>
+						<div className="links" style={{ fontSize: 50 }}>
+							<h2> {this.state.board.getMode()} </h2>
+							{<Stopwatch duration={this.state.duration} />}
+						</div>
 
 						{<Scoreboard scoreboard={this.state.scoreboard} className="scoreboard" />}
 					</div>
@@ -328,28 +345,97 @@ class Stratego extends React.Component {
 					<div className="column">
 						<div className="subColumn">
 							<div className="header-btn">
-								<button className="links" onClick={this.handleShuffle} disabled={shuffle_disabled}>
+								<button
+									className="links"
+									style={{
+										color: shuffleBtnColor,
+										borderColor: 'transparent',
+										backgroundColor: 'transparent'
+									}}
+									onClick={this.handleShuffle}
+									disabled={shuffle_disabled}
+								>
 									Shuffle
 								</button>
 								<h5 className="pipe">|</h5>
-								<button className="links" onClick={this.handleStart} disabled={start_disabled}>
+								<button
+									className="links"
+									style={{
+										color: startbtn_disabled,
+										borderColor: 'transparent',
+										backgroundColor: 'transparent'
+									}}
+									onClick={this.handleStart}
+									disabled={start_disabled}
+								>
 									Start
 								</button>
 								<h5 className="pipe">|</h5>
-								<button onClick={this.handleAutomove} disabled={automove_disabled}>
-									{' '}
-									Automove{' '}
+								<button
+									style={{
+										color: automoveBtn_disabled,
+										borderColor: 'transparent',
+										backgroundColor: 'transparent'
+									}}
+									onClick={this.handleAutomove}
+									disabled={automove_disabled}
+								>
+									Automove
 								</button>
 								<h5 className="pipe">|</h5>
-								<button className="links" onClick={this.handleSurrender} disabled={surrender_disabled}>
+								<button
+									className="links"
+									style={{
+										color: surrenderbtn_disabled,
+										borderColor: 'transparent',
+										backgroundColor: 'transparent'
+									}}
+									onClick={this.handleWin}
+									disabled={surrender_disabled}
+								>
+									Win
+								</button>
+								<h5 className="pipe">|</h5>
+								<button
+									className="links"
+									style={{
+										color: surrenderbtn_disabled,
+										borderColor: 'transparent',
+										backgroundColor: 'transparent'
+									}}
+									onClick={this.handleDraw}
+									disabled={surrender_disabled}
+								>
+									Draw
+								</button>
+								<h5 className="pipe">|</h5>
+								<button
+									className="links"
+									style={{
+										color: surrenderbtn_disabled,
+										borderColor: 'transparent',
+										backgroundColor: 'transparent'
+									}}
+									onClick={this.handleSurrender}
+									disabled={surrender_disabled}
+								>
 									Surrender
 								</button>
 								<h5 className="pipe">|</h5>
-								<button className="links" onClick={this.handlePlayAgain} disabled={playAgain_disabled}>
+								<button
+									className="links"
+									style={{
+										color: playAgainbtn_disabled,
+										borderColor: 'transparent',
+										backgroundColor: 'transparent'
+									}}
+									onClick={this.handlePlayAgain}
+									disabled={playAgain_disabled}
+								>
 									Play Again
 								</button>
 							</div>
-							<div className="feed">{<MoveHistory moves={board.getMoves()} />}</div>
+							<div className="feed">{<MoveHistory moves={this.state.board.getMoves()} />}</div>
 						</div>
 					</div>
 				</div>
