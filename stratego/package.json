@@ -34,7 +34,7 @@
 		"development": [ "last 1 chrome version", "last 1 firefox version", "last 1 safari version" ]
 	},
 	"devDependencies": {
-		"node-sass": "^4.12.0",
+		"node-sass": "^7.0.0",
 		"rerun-script": "^0.6.0",
 		"production": [ ">0.2%", "not dead", "not op_mini all" ],
 		"development": [ "last 1 chrome version", "last 1 firefox version", "last 1 safari version" ]
